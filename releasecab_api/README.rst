@@ -2,14 +2,14 @@ Release CAB API
 ===============
 
 Tech Stack
-==========
+----------
 
 - Python/Django
 - Django Rest Framework
 - Postgres
 
 URLS
-====
+----
 
 - Backend is served on localhost:8000
 - Admin site is at localhost:8000/admin
@@ -17,7 +17,7 @@ URLS
 
 
 Views
-=====
+-----
 
 Each set of views should have 'admin' views with the `IsAdminPermission`
 permission. These admin views are not currently used, but should be created for 
