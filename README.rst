@@ -58,6 +58,16 @@ Road Map
 
 See GitHub issues for what is slotted for each of these future versions
 
+
+Setup For Clean Install
+------------------------
+
+1. Install docker and docker-compose
+2. Run './scripts/run-server.sh dev'
+3. Frontend will be running on localhost:3000
+4. Comment out the loaddata line
+
+
 Setup For Local Testing
 -----------------------
 
@@ -67,15 +77,6 @@ Setup For Local Testing
 4. API will be running on localhost:8000
 5. Frontend will be running on localhost:3000
 6. Comment out the loaddata line
-
-
-Setup For Clean Install
-------------------------
-
-1. Install docker and docker-compose
-2. Run './scripts/run-server.sh dev'
-3. Frontend will be running on localhost:3000
-4. Comment out the loaddata line
 
 
 Production Deployment
@@ -116,6 +117,8 @@ role: superuser (for admin/api site)
 role: tenant owner with onboarding completed
 - username: test@test.com
 - password: releasecab
+
+If you did a clean install, you'll need to go through the signup flow to create a new tenant
 
 License
 -------
