@@ -1,17 +1,15 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import {
-  Button,
   Box,
+  Button,
   Center,
   Divider,
   FormControl,
   FormLabel,
   HStack,
-  Input,
   IconButton,
-  Spinner,
+  Input,
   SimpleGrid,
+  Spinner,
   Table,
   Tbody,
   Td,
@@ -19,14 +17,16 @@ import {
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
+import { AlertMessage } from "@components/AlertMessage";
+import { DeleteAlertDialog } from "@components/DeleteAlertDialog";
+import { Pagination } from "@components/paginiation";
+import { CreateRole, DeleteRole, GetRoles } from "@services/RoleApi";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { FiEdit2, FiEye, FiTrash2 } from "react-icons/fi";
 import { IoArrowDown, IoArrowUp } from "react-icons/io5";
-import { Pagination } from "@components/paginiation";
-import { GetRoles } from "@services/RoleApi";
-import { DeleteRole } from "@services/RoleApi";
-import { CreateRole } from "@services/RoleApi";
-import { AlertMessage } from "@components/AlertMessage";
 
 export const RolesManagementTable = () => {
   const [roles, setRoles] = useState();
@@ -37,8 +37,13 @@ export const RolesManagementTable = () => {
   const [sortBy, setSortBy] = useState("name");
   const [orderBy, setOrderBy] = useState("asc");
   const [update, setUpdate] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [newRole, setNewRole] = useState("");
+  const [roleToDelete, setRoleToDelete] = useState();
   const router = useRouter();
+  const toast = useToast();
+
+  const handleClose = () => setIsDialogOpen(false);
 
   const fetchRoles = async () => {
     setLoading(true);
@@ -65,12 +70,33 @@ export const RolesManagementTable = () => {
   };
 
   const deleteRole = async (e) => {
-    //TODO: Add confirm modal and let them know what happens to users
-    // that were part of that team. Also, they may not be able to delete
-    // ones that users are referencing. Figure that out
-    //TODO: Add toast
-    await DeleteRole(e);
-    setUpdate(!update);
+    setIsDialogOpen(true);
+    setRoleToDelete(e);
+  };
+
+  const onDeleteAction = async (action) => {
+    if (action === "delete") {
+      const deleteResult = await DeleteRole(roleToDelete);
+      if (deleteResult.ok) {
+        toast({
+          title: "Role Deleted",
+          status: "success",
+          isClosable: true,
+          duration: 5000,
+        });
+      } else {
+        toast({
+          title: "Unable To Delete Role",
+          status: "error",
+          isClosable: true,
+          duration: 5000,
+        });
+      }
+      setUpdate(!update);
+      setRoleToDelete();
+    } else {
+      setRoleToDelete();
+    }
   };
 
   const toggleSort = (field) => {
@@ -214,6 +240,12 @@ export const RolesManagementTable = () => {
         </>
       )}
       {roles?.count === 0 && <Text>No roles found</Text>}
+      <DeleteAlertDialog
+        isOpen={isDialogOpen}
+        onClose={handleClose}
+        title="Delete Role"
+        onDelete={onDeleteAction}
+      />
     </>
   );
 };

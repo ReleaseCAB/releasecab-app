@@ -22,6 +22,7 @@ import {
   useToast,
 } from "@chakra-ui/react";
 import { AlertMessage } from "@components/AlertMessage";
+import { DeleteAlertDialog } from "@components/DeleteAlertDialog";
 import { Dropzone } from "@components/Dropzone";
 import { Pagination } from "@components/paginiation";
 import { CreateTeam, DeleteTeam, GetTeams } from "@services/TeamApi";
@@ -42,8 +43,12 @@ export const TeamManagementTable = () => {
   const [update, setUpdate] = useState(true);
   const [teamFile, setTeamFile] = useState(null);
   const [newTeam, setNewTeam] = useState("");
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [teamToDelete, setTeamToDelete] = useState();
   const router = useRouter();
   const toast = useToast();
+
+  const handleClose = () => setIsDialogOpen(false);
 
   const fetchTeams = async () => {
     setLoading(true);
@@ -139,12 +144,33 @@ export const TeamManagementTable = () => {
   };
 
   const deleteTeam = async (e) => {
-    //TODO: Add confirm modal and let them know what happens to users
-    // that were part of that team. They may not be able to delete teams
-    // that users belong to
-    //TODO: Add toast
-    await DeleteTeam(e);
-    setUpdate(!update);
+    setIsDialogOpen(true);
+    setTeamToDelete(e);
+  };
+
+  const onDeleteAction = async (action) => {
+    if (action === "delete") {
+      const deleteResult = await DeleteTeam(teamToDelete);
+      if (deleteResult.ok) {
+        toast({
+          title: "Team Deleted",
+          status: "success",
+          isClosable: true,
+          duration: 5000,
+        });
+      } else {
+        toast({
+          title: "Unable To Delete Team",
+          status: "error",
+          isClosable: true,
+          duration: 5000,
+        });
+      }
+      setUpdate(!update);
+      setTeamToDelete();
+    } else {
+      setTeamToDelete();
+    }
   };
 
   return (
@@ -292,6 +318,12 @@ export const TeamManagementTable = () => {
         </>
       )}
       {teams?.count === 0 && <Text>No teams found</Text>}
+      <DeleteAlertDialog
+        isOpen={isDialogOpen}
+        onClose={handleClose}
+        title="Delete Team"
+        onDelete={onDeleteAction}
+      />
     </>
   );
 };
