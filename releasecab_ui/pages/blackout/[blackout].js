@@ -1,4 +1,5 @@
-import { Box, Button, ButtonGroup } from "@chakra-ui/react";
+import { Box, Button, ButtonGroup, useToast } from "@chakra-ui/react";
+import { DeleteAlertDialog } from "@components/DeleteAlertDialog";
 import { Header } from "@components/Header";
 import { Layout } from "@components/Layout";
 import { AppShell } from "@components/app-shell/AppShell";
@@ -24,6 +25,10 @@ const Blackout = () => {
   const [blackout, setBlackout] = useState(null);
   const [profile, setProfile] = useState({});
   const [loadCount, setLoadCount] = useState(0);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const toast = useToast();
+
+  const handleClose = () => setIsDialogOpen(false);
 
   const fetchBlackout = async () => {
     setLoading(true);
@@ -83,9 +88,26 @@ const Blackout = () => {
     return blackoutOwner && blackoutOwner === profile.id;
   };
 
-  const deleteBlackout = async () => {
-    await DeleteBlackout(blackout.id);
-    router.push("/blackout/blackouts");
+  const deleteBlackout = async (e) => {
+    setIsDialogOpen(true);
+  };
+
+  const onDeleteAction = async (action) => {
+    if (action === "delete") {
+      const deleteResult = await DeleteBlackout(blackout.id);
+      if (deleteResult.ok) {
+        router.push("/blackout/blackouts");
+      } else {
+        toast({
+          title: "Unable To Delete Blackout",
+          status: "error",
+          isClosable: true,
+          duration: 5000,
+        });
+      }
+    } else {
+      // Take no action on cancel
+    }
   };
 
   const renderContent = () => {
@@ -155,6 +177,12 @@ const Blackout = () => {
   return (
     <Layout title={pageTitle} showfooter="false">
       <AppShell pageContent={renderContent()} />
+      <DeleteAlertDialog
+        isOpen={isDialogOpen}
+        onClose={handleClose}
+        title="Delete Release"
+        onDelete={onDeleteAction}
+      />
     </Layout>
   );
 };
