@@ -1,4 +1,5 @@
-import { Box, Button, ButtonGroup } from "@chakra-ui/react";
+import { Box, Button, ButtonGroup, useToast } from "@chakra-ui/react";
+import { DeleteAlertDialog } from "@components/DeleteAlertDialog";
 import { Header } from "@components/Header";
 import { Layout } from "@components/Layout";
 import { AppShell } from "@components/app-shell/AppShell";
@@ -27,6 +28,10 @@ const Release = () => {
   const [release, setRelease] = useState(null);
   const [profile, setProfile] = useState({});
   const [loadCount, setLoadCount] = useState(0);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const toast = useToast();
+
+  const handleClose = () => setIsDialogOpen(false);
 
   const fetchRelease = async () => {
     setLoading(true);
@@ -79,9 +84,26 @@ const Release = () => {
     return releaseOwner && releaseOwner === profile.id;
   };
 
-  const deleteRelease = async () => {
-    await DeleteRelease(release.id);
-    router.push("/release/releases");
+  const deleteRelease = async (e) => {
+    setIsDialogOpen(true);
+  };
+
+  const onDeleteAction = async (action) => {
+    if (action === "delete") {
+      const deleteResult = await DeleteRelease(release.id);
+      if (deleteResult.ok) {
+        router.push("/release/releases");
+      } else {
+        toast({
+          title: "Unable To Delete Release",
+          status: "error",
+          isClosable: true,
+          duration: 5000,
+        });
+      }
+    } else {
+      // Take no action on cancel
+    }
   };
 
   const renderContent = () => {
@@ -145,6 +167,12 @@ const Release = () => {
   return (
     <Layout title={pageTitle} showfooter="false">
       <AppShell pageContent={renderContent()} />
+      <DeleteAlertDialog
+        isOpen={isDialogOpen}
+        onClose={handleClose}
+        title="Delete Release"
+        onDelete={onDeleteAction}
+      />
     </Layout>
   );
 };
