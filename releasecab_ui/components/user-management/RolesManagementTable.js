@@ -17,6 +17,7 @@ import {
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
 import { AlertMessage } from "@components/AlertMessage";
 import { DeleteAlertDialog } from "@components/DeleteAlertDialog";
@@ -40,6 +41,7 @@ export const RolesManagementTable = () => {
   const [newRole, setNewRole] = useState("");
   const [roleToDelete, setRoleToDelete] = useState();
   const router = useRouter();
+  const toast = useToast();
 
   const handleClose = () => setIsDialogOpen(false);
 
@@ -74,10 +76,24 @@ export const RolesManagementTable = () => {
 
   const onDeleteAction = async (action) => {
     if (action === "delete") {
-      await DeleteRole(roleToDelete);
+      const deleteResult = await DeleteRole(roleToDelete);
+      if (deleteResult.ok) {
+        toast({
+          title: "Role Deleted",
+          status: "success",
+          isClosable: true,
+          duration: 5000,
+        });
+      } else {
+        toast({
+          title: "Unable To Delete Role",
+          status: "error",
+          isClosable: true,
+          duration: 5000,
+        });
+      }
       setUpdate(!update);
       setRoleToDelete();
-      //TODO: Add toast
     } else {
       setRoleToDelete();
     }
