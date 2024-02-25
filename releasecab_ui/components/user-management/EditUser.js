@@ -157,7 +157,7 @@ export const EditUser = ({ user }) => {
           )}
           <FormControl display="flex" alignItems="center">
             <FormLabel htmlFor="isActive" mb="0">
-              Is Active
+              Is Approved/Active
             </FormLabel>
             <Switch
               colorScheme="teal"

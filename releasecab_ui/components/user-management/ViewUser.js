@@ -42,7 +42,7 @@ export const ViewUser = ({ user }) => {
           <Text>{user.is_tenant_owner ? "true" : "false"}</Text>
         </GridItem>
         <GridItem>
-          <Text fontWeight="bold">Is Active:</Text>
+          <Text fontWeight="bold">Is Approved/Active:</Text>
         </GridItem>
         <GridItem>
           <Text>{user.is_active ? "true" : "false"}</Text>
