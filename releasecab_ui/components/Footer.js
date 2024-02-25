@@ -2,7 +2,6 @@ import {
   Box,
   ButtonGroup,
   Container,
-  IconButton,
   Link,
   Stack,
   Text,
@@ -17,27 +16,27 @@ const Footer = () => (
         <Stack justify="space-between" direction="row" align="center">
           <Logo />
           <ButtonGroup variant="tertiary.accent">
-            <IconButton
-              as="a"
-              href="#"
-              aria-label="GitHub"
-              icon={<FaGithub fontSize="1.25rem" />}
-            />
-            <IconButton
-              as="a"
-              href="#"
-              aria-label="Coffee"
-              icon={<FaCoffee fontSize="1.25rem" />}
-            />
+            <Link
+              href="https://github.com/ReleaseCAB/releasecab-app"
+              isExternal
+            >
+              <FaGithub size={25} />
+            </Link>
+            <Link href="https://www.buymeacoffee.com/releasecab" isExternal>
+              <FaCoffee size={25} />
+            </Link>
           </ButtonGroup>
         </Stack>
         <Text fontSize="sm" color="brand.gray_text">
-          Want to support our development? Click{" "}
-          <Link color="brand.link_blue">here</Link> to learn more!
-        </Text>
-        <Text fontSize="sm" color="brand.gray_text">
           &copy; {new Date().getFullYear()} Release CAB. This project is open
-          source under the [License Name].
+          source under the{" "}
+          <Link
+            href="https://github.com/ReleaseCAB/releasecab-app/blob/main/LICENSE"
+            isExternal
+            color="brand.link_blue"
+          >
+            GNU General Public License v3.0.
+          </Link>
         </Text>
       </Stack>
     </Container>
