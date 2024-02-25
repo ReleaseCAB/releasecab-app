@@ -145,13 +145,20 @@ export const AppShell = (props) => {
               <Box>
                 <Stack spacing="1">
                   {navConstants.bottomNav.map((item) => (
-                    <NavItem
-                      key={item.label}
-                      icon={<item.icon />}
-                      label={item.label}
-                      active={isActive(item.url)}
-                      href={item.url}
-                    />
+                    <div
+                      key={"TODO REMOVE KEY" + item.label}
+                      onClick={() =>
+                        alert("TODO: Help Center Not Implemented Yet!")
+                      }
+                    >
+                      <NavItem
+                        key={item.label}
+                        icon={<item.icon />}
+                        label={item.label}
+                        active={isActive(item.url)}
+                        href={"#"}
+                      />
+                    </div>
                   ))}
                 </Stack>
               </Box>
