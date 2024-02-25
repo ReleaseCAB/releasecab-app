@@ -150,10 +150,24 @@ export const TeamManagementTable = () => {
 
   const onDeleteAction = async (action) => {
     if (action === "delete") {
-      await DeleteTeam(teamToDelete);
+      const deleteResult = await DeleteTeam(teamToDelete);
+      if (deleteResult.ok) {
+        toast({
+          title: "Team Deleted",
+          status: "success",
+          isClosable: true,
+          duration: 5000,
+        });
+      } else {
+        toast({
+          title: "Unable To Delete Team",
+          status: "error",
+          isClosable: true,
+          duration: 5000,
+        });
+      }
       setUpdate(!update);
       setTeamToDelete();
-      //TODO: Add toast
     } else {
       setTeamToDelete();
     }
