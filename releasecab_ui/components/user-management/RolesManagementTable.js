@@ -227,7 +227,7 @@ export const RolesManagementTable = () => {
       <DeleteAlertDialog
         isOpen={isDialogOpen}
         onClose={handleClose}
-        title="Delete Customer"
+        title="Delete Role"
         onDelete={onDeleteAction}
       />
     </>
