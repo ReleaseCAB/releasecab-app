@@ -5,13 +5,12 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogOverlay,
-  Button
+  Button,
 } from "@chakra-ui/react";
 import { useRef } from "react";
 
-
 export const DeleteAlertDialog = ({ isOpen, onClose, title, onDelete }) => {
-  const cancelRef = useRef()
+  const cancelRef = useRef();
 
   const handleDelete = (action) => {
     onDelete(action);
@@ -26,7 +25,7 @@ export const DeleteAlertDialog = ({ isOpen, onClose, title, onDelete }) => {
     >
       <AlertDialogOverlay>
         <AlertDialogContent>
-          <AlertDialogHeader fontSize='lg' fontWeight='bold'>
+          <AlertDialogHeader fontSize="lg" fontWeight="bold">
             {title}
           </AlertDialogHeader>
 
@@ -34,15 +33,19 @@ export const DeleteAlertDialog = ({ isOpen, onClose, title, onDelete }) => {
             Are you sure? You can't undo this action afterwards.
           </AlertDialogBody>
           <AlertDialogFooter>
-            <Button ref={cancelRef} onClick={() => handleDelete('cancel')}>
+            <Button ref={cancelRef} onClick={() => handleDelete("cancel")}>
               Cancel
             </Button>
-            <Button colorScheme='red' onClick={() => handleDelete('delete')} ml={3}>
+            <Button
+              colorScheme="red"
+              onClick={() => handleDelete("delete")}
+              ml={3}
+            >
               Delete
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialogOverlay>
     </AlertDialog>
-  )
-}
+  );
+};
