@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import Select from "react-select";
 import {
   Box,
   Button,
@@ -8,12 +6,13 @@ import {
   FormLabel,
   Input,
   Switch,
-  useToast,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
 import { AlertMessage } from "@components/AlertMessage";
 import { UpdateReleaseStage } from "@services/ReleaseApi";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 export const EditReleaseStage = ({ releaseStage }) => {
   const router = useRouter();
@@ -22,6 +21,7 @@ export const EditReleaseStage = ({ releaseStage }) => {
   const [releaseStageDescription, setReleaseStageDescription] = useState(
     releaseStage.description,
   );
+  const [isEndStage, setIsEndStage] = useState(releaseStage.is_end_stage);
   const toast = useToast();
 
   const handleFormSubmit = async (e) => {
@@ -29,6 +29,7 @@ export const EditReleaseStage = ({ releaseStage }) => {
     setError("");
     const releaseStageObj = {
       description: releaseStageDescription,
+      is_end_stage: isEndStage,
     };
     const newReleaseStage = await UpdateReleaseStage(
       releaseStageObj,
@@ -69,6 +70,17 @@ export const EditReleaseStage = ({ releaseStage }) => {
               onChange={(event) =>
                 setReleaseStageDescription(event.target.value)
               }
+            />
+          </FormControl>
+          <FormControl display="flex" alignItems="center">
+            <FormLabel htmlFor="isEndStage" mb="0">
+              Is End Stage
+            </FormLabel>
+            <Switch
+              colorScheme="teal"
+              size="lg"
+              isChecked={isEndStage}
+              onChange={() => setIsEndStage(!isEndStage)}
             />
           </FormControl>
         </VStack>

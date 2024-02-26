@@ -160,7 +160,11 @@ export const UserManagementTable = () => {
                   <Td>{user.email}</Td>
                   <Td>{user.is_tenant_owner ? "Owner" : "User"}</Td>
                   <Td>
-                    <Badge>{user.is_active ? "Approved/Active" : "Not Approved/Active"}</Badge>
+                    <Badge>
+                      {user.is_active
+                        ? "Approved/Active"
+                        : "Not Approved/Active"}
+                    </Badge>
                   </Td>
                   <Td>
                     <HStack spacing="1">

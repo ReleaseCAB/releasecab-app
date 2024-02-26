@@ -1,4 +1,4 @@
-import { Badge, Box, Grid, GridItem, Heading, Text } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Heading, Text } from "@chakra-ui/react";
 
 export const ViewReleaseStage = ({ releaseStage }) => {
   return (
@@ -10,6 +10,12 @@ export const ViewReleaseStage = ({ releaseStage }) => {
         </GridItem>
         <GridItem>
           <Text>{releaseStage.description || "N/A"}</Text>
+        </GridItem>
+        <GridItem>
+          <Text fontWeight="bold">Is End Stage:</Text>
+        </GridItem>
+        <GridItem>
+          <Text>{releaseStage.is_end_stage ? "true" : "false"}</Text>
         </GridItem>
       </Grid>
     </Box>
