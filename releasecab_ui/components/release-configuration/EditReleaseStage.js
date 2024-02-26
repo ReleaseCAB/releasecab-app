@@ -13,16 +13,30 @@ import { AlertMessage } from "@components/AlertMessage";
 import { UpdateReleaseStage } from "@services/ReleaseApi";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import Select from "react-select";
 
-export const EditReleaseStage = ({ releaseStage, connections }) => {
+export const EditReleaseStage = ({
+  releaseStage,
+  connections,
+  releaseStages,
+}) => {
   const router = useRouter();
   const [error, setError] = useState("");
   const [releaseStageName, setReleaseStageName] = useState(releaseStage.name);
+  const [selectedFromStages, setSelectedFromStages] = useState(connections.fromStages);
+  const [selectedToStages, setSelectedToStages] = useState(connections.toStages);
   const [releaseStageDescription, setReleaseStageDescription] = useState(
     releaseStage.description,
   );
   const [isEndStage, setIsEndStage] = useState(releaseStage.is_end_stage);
   const toast = useToast();
+
+  const formatReleaseStages = () => {
+    return releaseStages?.map(item => ({
+      label: item.name,
+      value: item.id
+    }));
+  }
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
@@ -69,6 +83,30 @@ export const EditReleaseStage = ({ releaseStage, connections }) => {
               value={releaseStageDescription}
               onChange={(event) =>
                 setReleaseStageDescription(event.target.value)
+              }
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>From Stages</FormLabel>
+            <Select
+              options={formatReleaseStages()}
+              value={selectedFromStages}
+              isMulti
+              placeholder="Select From Stages"
+              onChange={(selectedOptions) =>
+                setSelectedFromStages(selectedOptions)
+              }
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>To Stages</FormLabel>
+            <Select
+              options={formatReleaseStages()}
+              value={selectedToStages}
+              isMulti
+              placeholder="Select To Stages"
+              onChange={(selectedOptions) =>
+                setSelectedToStages(selectedOptions)
               }
             />
           </FormControl>

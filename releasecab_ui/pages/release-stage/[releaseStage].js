@@ -124,21 +124,19 @@ const ReleaseStage = () => {
   const filterStages = () => {
     const fromStages = [];
     const toStages = [];
-
     releaseStageConnections.forEach((item) => {
       const fromStage = releaseStages.find(
         (stage) => stage.id === item.from_stage,
       );
       const toStage = releaseStages.find((stage) => stage.id === item.to_stage);
-
       if (toStage && item.to_stage.toString() === releaseStageId) {
-        toStages.push({
+        fromStages.push({
           label: fromStage ? fromStage.name : "",
           value: item.from_stage,
         });
       }
       if (fromStage && item.from_stage.toString() === releaseStageId) {
-        fromStages.push({
+        toStages.push({
           label: toStage ? toStage.name : "",
           value: item.to_stage,
         });
@@ -195,6 +193,7 @@ const ReleaseStage = () => {
             <EditReleaseStage
               releaseStage={releaseStage}
               connections={filteredConnections}
+              releaseStages={releaseStages}
             />
           )}
         </Box>

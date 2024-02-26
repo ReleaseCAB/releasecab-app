@@ -16,7 +16,7 @@ export const ViewReleaseStage = ({ releaseStage, connections }) => {
         </GridItem>
         <GridItem>
           <Text>
-            {connections?.toStages.map((stage, index) => (
+            {connections?.fromStages.map((stage, index) => (
               <Badge key={stage.value}>{stage.label}</Badge>
             ))}
           </Text>
@@ -26,7 +26,7 @@ export const ViewReleaseStage = ({ releaseStage, connections }) => {
         </GridItem>
         <GridItem>
           <Text>
-            {connections?.fromStages.map((stage, index) => (
+            {connections?.toStages.map((stage, index) => (
               <Badge key={stage.value}>{stage.label}</Badge>
             ))}
           </Text>
