@@ -24,6 +24,7 @@ const Workflows = () => {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(false);
   const [teamsLoading, setTeamsLoading] = useState(true);
+  const [updateConnections, setUpdateConnections] = useState(false);
 
   const fetchReleaseStages = async () => {
     setLoading(true);
@@ -92,6 +93,10 @@ const Workflows = () => {
     fetchReleaseConfig();
   }, []);
 
+  useEffect(() => {
+    fetchReleaseStageConnections();
+  }, [updateConnections]);
+
   const renderContent = () => {
     return (
       <>
@@ -116,6 +121,8 @@ const Workflows = () => {
                 releaseStages={releaseStages}
                 roles={roles}
                 teams={teams}
+                updateConnections={updateConnections}
+                setUpdateConnections={setUpdateConnections}
               />
             )}
         </Box>

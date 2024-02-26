@@ -1,7 +1,8 @@
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.generics import (ListAPIView, RetrieveAPIView,
-                                     UpdateAPIView, get_object_or_404)
+from rest_framework.generics import (DestroyAPIView, ListAPIView,
+                                     RetrieveAPIView, UpdateAPIView,
+                                     get_object_or_404)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -209,3 +210,36 @@ class ReleaseStageConnectionsView(APIView):
                     "error": f"ReleaseStage with id \
                         {release_stage_id} does not exist"},
                 status=status.HTTP_404_NOT_FOUND)
+
+
+class ReleaseConnectionDeleteAPIView(DestroyAPIView):
+    '''
+    DELETE a release connection, requires tenant owner permissions
+    '''
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication, SessionAuthentication]
+
+    def get_queryset(self):
+        return ReleaseStageConnection.objects.all()
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        lookup_field = self.kwargs.get('pk')
+        obj = get_object_or_404(
+            queryset,
+            id=lookup_field,
+            tenant=self.request.user.tenant)
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    def perform_destroy(self, instance):
+        message_title = f"Release Connection from '{instance.from_stage}'\
+            to '{instance.to_stage}' Was Deleted"
+        message_body = f"Release connection from '{instance.from_stage}'\
+            to '{instance.to_stage}' was deleted"
+        CommunicationHelpers.create_new_message(
+            self.request.user,
+            message_title,
+            message_body,
+            False)
+        super(ReleaseConnectionDeleteAPIView, self).perform_destroy(instance)

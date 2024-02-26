@@ -1,3 +1,5 @@
+import { useToast } from "@chakra-ui/react";
+import { DeleteReleaseStageConnection } from "@services/ReleaseApi";
 import { useCallback, useEffect, useState } from "react";
 import ReactFlow, {
   Background,
@@ -16,6 +18,7 @@ export const WorkflowDiagram = (props) => {
   const [nodes, setNodes] = useState();
   const [edges, setEdges] = useState();
   const proOptions = { hideAttribution: true };
+  const toast = useToast();
 
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
@@ -35,9 +38,45 @@ export const WorkflowDiagram = (props) => {
     console.log("Edge updated:", params);
   };
 
-  const onEdgeUpdateEnd = (params) => {
-    console.log("Edge ended:", params);
-  };
+  //Handle an edge delete
+  const onEdgeUpdateEnd = useCallback(async (_, edge) => {
+    const matchingConnection = props.releaseStageConnections.find(
+      (connection) => {
+        return (
+          connection.from_stage.toString() === edge.source &&
+          connection.to_stage.toString() === edge.target
+        );
+      },
+    );
+    if (matchingConnection) {
+      const deleteResult = await DeleteReleaseStageConnection(
+        matchingConnection.id,
+      );
+      if (deleteResult.ok) {
+        props.setUpdateConnections(!props.updateConnections);
+        toast({
+          title: "Stage Connection Deleted",
+          status: "success",
+          isClosable: true,
+          duration: 5000,
+        });
+      } else {
+        toast({
+          title: "Unable To Delete Connection",
+          status: "error",
+          isClosable: true,
+          duration: 5000,
+        });
+      }
+    } else {
+      toast({
+        title: "Unable To Delete Connection",
+        status: "error",
+        isClosable: true,
+        duration: 5000,
+      });
+    }
+  }, []);
 
   const createNodes = async () => {
     const spacingX = 200;
