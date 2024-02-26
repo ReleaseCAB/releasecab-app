@@ -14,7 +14,7 @@ import { UpdateReleaseStage } from "@services/ReleaseApi";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-export const EditReleaseStage = ({ releaseStage }) => {
+export const EditReleaseStage = ({ releaseStage, connections }) => {
   const router = useRouter();
   const [error, setError] = useState("");
   const [releaseStageName, setReleaseStageName] = useState(releaseStage.name);

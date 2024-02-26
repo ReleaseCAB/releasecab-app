@@ -21,57 +21,56 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'id',
-            'email',
-            'first_name',
-            'last_name',
-            'tenant',
-            'role',
-            'last_onboarding_step',
-            'is_onboarding_complete',
-            'is_tenant_owner',
-            'password',
-            'is_active',
-            'is_manager',
-            'teams_managed',
-            'can_create_blackouts',
-            'can_create_releases',
-            'teams',
-            'tenant']
-        read_only_fields = [
-            'pk', 'created_at']
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "tenant",
+            "role",
+            "last_onboarding_step",
+            "is_onboarding_complete",
+            "is_tenant_owner",
+            "password",
+            "is_active",
+            "is_manager",
+            "teams_managed",
+            "can_create_blackouts",
+            "can_create_releases",
+            "teams",
+            "tenant",
+        ]
+        read_only_fields = ["pk", "created_at"]
 
     def __init__(self, *args, **kwargs):
-        kwargs['partial'] = True
+        kwargs["partial"] = True
         super().__init__(*args, **kwargs)
 
     def validate_password(self, value):
-        user = self.context['request'].user if 'request' in self.context \
-            else None
+        if "request" in self.context:
+            user = self.context["request"].user
+        else:
+            user = None
         password_validation.validate_password(value, user=user)
         return value
 
     def create(self, validated_data):
-        print(self.context['request'].data.get(
-            'tenant', None))
-        email = validated_data.get('email')
+        email = validated_data.get("email")
         if email:
             if InvitedUser.objects.filter(email=email).exists():
-                validated_data['is_active'] = True
+                validated_data["is_active"] = True
             else:
-                validated_data['is_active'] = False
-            tenant = self.context['request'].data.get(
-                'tenant', None)
-            validated_data['tenant'] = Tenant.objects.get(pk=tenant)
+                validated_data["is_active"] = False
+            tenant = self.context["request"].data.get("tenant", None)
+            validated_data["tenant"] = Tenant.objects.get(pk=tenant)
             user_count = User.objects.filter(tenant=tenant).count()
             if user_count == 0:
-                validated_data['is_active'] = True
-        validated_data['password'] = make_password(validated_data['password'])
+                validated_data["is_active"] = True
+        validated_data["password"] = make_password(validated_data["password"])
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        if 'request' in self.context:
-            role_data = self.context['request'].data.get('role', None)
+        if "request" in self.context:
+            role_data = self.context["request"].data.get("role", None)
         else:
             role_data = None
         if role_data is not None:
@@ -94,28 +93,32 @@ class UserSerializer(serializers.ModelSerializer):
         return obj.teams_as_manager.exists()
 
     def get_teams_managed(self, obj):
-        teams_managed = obj.teams_as_manager.values_list('id', flat=True)
+        teams_managed = obj.teams_as_manager.values_list("id", flat=True)
         return list(teams_managed)
 
     def get_can_create_blackouts(self, obj):
-        return obj.teams_as_member.filter(can_create_blackouts=True).exists() \
+        return (
+            obj.teams_as_member.filter(can_create_blackouts=True).exists()
             or obj.is_tenant_owner
+        )
 
     def get_can_create_releases(self, obj):
-        return obj.teams_as_member.filter(can_create_releases=True).exists() \
+        return (
+            obj.teams_as_member.filter(can_create_releases=True).exists()
             or obj.is_tenant_owner
+        )
 
     def to_representation(self, instance):
         representation = super().to_representation(instance)
-        representation['tenant'] = self.get_tenant(instance)
-        representation['is_manager'] = self.get_is_manager(instance)
-        representation['teams_managed'] = self.get_teams_managed(instance)
-        representation['can_create_blackouts'] = self.get_can_create_blackouts(
+        representation["tenant"] = self.get_tenant(instance)
+        representation["is_manager"] = self.get_is_manager(instance)
+        representation["teams_managed"] = self.get_teams_managed(instance)
+        representation["can_create_blackouts"] = self.get_can_create_blackouts(
             instance)
         return representation
 
     def get_role(self, obj):
-        return [{'value': role.id, 'label': str(
+        return [{"value": role.id, "label": str(
             role)} for role in obj.role.all()]
 
 

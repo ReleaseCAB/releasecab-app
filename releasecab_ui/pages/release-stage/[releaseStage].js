@@ -4,7 +4,11 @@ import { Layout } from "@components/Layout";
 import { AppShell } from "@components/app-shell/AppShell";
 import { EditReleaseStage } from "@components/release-configuration/EditReleaseStage";
 import { ViewReleaseStage } from "@components/release-configuration/ViewReleaseStage";
-import { GetReleaseStage } from "@services/ReleaseApi";
+import {
+  FetchReleaseStageConnectionsForTenant,
+  GetReleaseStage,
+  GetReleaseStages,
+} from "@services/ReleaseApi";
 import { WithAuthGuard } from "@utils/auth/AuthGuard";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
@@ -23,9 +27,12 @@ const ReleaseStage = () => {
   const [loading, setLoading] = useState(true);
   const [pageMode, setPageMode] = useState("");
   const [releaseStage, setReleaseStage] = useState(null);
+  const [releaseStageConnections, setReleaseStageConnections] = useState([]);
+  const [filteredConnections, setFilteredConnections] = useState({});
   const [profile, setProfile] = useState({});
   const [loadCount, setLoadCount] = useState(0);
   const [breadcrumbs, setBreadcrumbs] = useState({});
+  const [releaseStages, setReleaseStages] = useState([]);
 
   const fetchReleaseStage = async () => {
     setLoading(true);
@@ -46,6 +53,28 @@ const ReleaseStage = () => {
     setLoading(false);
   };
 
+  const fetchReleaseStageConnections = async () => {
+    if (loadCount > 0 || releaseStageId != undefined) {
+      const response = await FetchReleaseStageConnectionsForTenant();
+      if (response.ok) {
+        const data = await response.json();
+        await setReleaseStageConnections(data);
+      } else {
+        router.push("/");
+      }
+    }
+  };
+
+  const fetchReleaseStages = async () => {
+    const response = await GetReleaseStages(true);
+    if (response.ok) {
+      const data = await response.json();
+      setReleaseStages(data);
+    } else {
+      router.push("/");
+    }
+  };
+
   useEffect(() => {
     const profileData = store.getState().user;
     if (!profileData.is_tenant_owner) {
@@ -53,6 +82,8 @@ const ReleaseStage = () => {
     }
     setProfile(profileData);
     fetchReleaseStage();
+    fetchReleaseStageConnections();
+    fetchReleaseStages();
     setLoadCount(loadCount + 1);
   }, [router.query.releaseStage]);
 
@@ -81,8 +112,40 @@ const ReleaseStage = () => {
   useEffect(() => {
     if (pageMode === "view") {
       fetchReleaseStage();
+      fetchReleaseStageConnections();
+      fetchReleaseStages();
     }
   }, [pageMode]);
+
+  useEffect(() => {
+    setFilteredConnections(filterStages());
+  }, [releaseStageConnections]);
+
+  const filterStages = () => {
+    const fromStages = [];
+    const toStages = [];
+
+    releaseStageConnections.forEach((item) => {
+      const fromStage = releaseStages.find(
+        (stage) => stage.id === item.from_stage,
+      );
+      const toStage = releaseStages.find((stage) => stage.id === item.to_stage);
+
+      if (toStage && item.to_stage.toString() === releaseStageId) {
+        toStages.push({
+          label: fromStage ? fromStage.name : "",
+          value: item.from_stage,
+        });
+      }
+      if (fromStage && item.from_stage.toString() === releaseStageId) {
+        fromStages.push({
+          label: toStage ? toStage.name : "",
+          value: item.to_stage,
+        });
+      }
+    });
+    return { fromStages, toStages };
+  };
 
   const renderContent = () => {
     return (
@@ -123,10 +186,16 @@ const ReleaseStage = () => {
             )}
           </ButtonGroup>
           {releaseStage && pageMode === "view" && (
-            <ViewReleaseStage releaseStage={releaseStage} />
+            <ViewReleaseStage
+              releaseStage={releaseStage}
+              connections={filteredConnections}
+            />
           )}
           {releaseStage && pageMode === "edit" && (
-            <EditReleaseStage releaseStage={releaseStage} />
+            <EditReleaseStage
+              releaseStage={releaseStage}
+              connections={filteredConnections}
+            />
           )}
         </Box>
       </>
