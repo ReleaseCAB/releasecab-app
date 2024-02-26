@@ -21,10 +21,23 @@ export const WorkflowDiagram = (props) => {
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
     [],
   );
+
   const onEdgesChange = useCallback(
     (changes) => setEdges((eds) => applyEdgeChanges(changes, eds)),
     [],
   );
+
+  const onEdgeConnect = (params) => {
+    console.log("New edge created:", params);
+  };
+
+  const onEdgeUpdate = (params) => {
+    console.log("Edge updated:", params);
+  };
+
+  const onEdgeUpdateEnd = (params) => {
+    console.log("Edge ended:", params);
+  };
 
   const createNodes = async () => {
     const spacingX = 200;
@@ -82,7 +95,10 @@ export const WorkflowDiagram = (props) => {
         nodes={nodes}
         onNodesChange={onNodesChange}
         edges={edges}
+        onConnect={onEdgeConnect}
         onEdgesChange={onEdgesChange}
+        onEdgeUpdate={onEdgeUpdate}
+        onEdgeUpdateEnd={onEdgeUpdateEnd}
         edgeTypes={edgeTypes}
         proOptions={proOptions}
       >

@@ -4,8 +4,10 @@ import {
   Flex,
   FormControl,
   FormLabel,
+  IconButton,
   Input,
   Switch,
+  Tooltip,
   VStack,
   useToast,
 } from "@chakra-ui/react";
@@ -13,6 +15,7 @@ import { AlertMessage } from "@components/AlertMessage";
 import { UpdateReleaseStage } from "@services/ReleaseApi";
 import { useRouter } from "next/router";
 import { useState } from "react";
+import { BiHelpCircle } from "react-icons/bi";
 import Select from "react-select";
 
 export const EditReleaseStage = ({
@@ -91,8 +94,23 @@ export const EditReleaseStage = ({
             />
           </FormControl>
           <FormControl>
-            <FormLabel>From Stages</FormLabel>
+            <FormLabel>
+              From Stages
+              <Tooltip
+                label={"To change 'from stages', go to Workflow Designer"}
+              >
+                <IconButton
+                  icon={<BiHelpCircle />}
+                  colorScheme="gray"
+                  aria-label={"From Stages Help Text"}
+                  size="xs"
+                  fontSize="16px"
+                  p={1}
+                />
+              </Tooltip>
+            </FormLabel>
             <Select
+              isDisabled
               options={formatReleaseStages()}
               value={selectedFromStages}
               isMulti
@@ -103,8 +121,21 @@ export const EditReleaseStage = ({
             />
           </FormControl>
           <FormControl>
-            <FormLabel>To Stages</FormLabel>
+            <FormLabel>
+              To Stages
+              <Tooltip label={"To change 'to stages', go to Workflow Designer"}>
+                <IconButton
+                  icon={<BiHelpCircle />}
+                  colorScheme="gray"
+                  aria-label={"To Stages Help Text"}
+                  size="xs"
+                  fontSize="16px"
+                  p={1}
+                />
+              </Tooltip>
+            </FormLabel>
             <Select
+              isDisabled
               options={formatReleaseStages()}
               value={selectedToStages}
               isMulti
