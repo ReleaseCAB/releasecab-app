@@ -1,6 +1,9 @@
 import { useToast } from "@chakra-ui/react";
 import { DeleteAlertDialog } from "@components/DeleteAlertDialog";
-import { DeleteReleaseStageConnection } from "@services/ReleaseApi";
+import {
+  CreateReleaseStageConnection,
+  DeleteReleaseStageConnection,
+} from "@services/ReleaseApi";
 import { useCallback, useEffect, useRef, useState } from "react";
 import ReactFlow, {
   Background,
@@ -41,8 +44,7 @@ export const WorkflowDiagram = (props) => {
   }, []);
 
   //Handle a new connection
-  const onEdgeConnect = (params) => {
-    console.log("Connect (new) code");
+  const onEdgeConnect = async (params) => {
     const matchingConnection = props.releaseStageConnections.find(
       (connection) => {
         return (
@@ -52,9 +54,31 @@ export const WorkflowDiagram = (props) => {
       },
     );
     if (matchingConnection) {
-      console.log("connection already exists");
+      //Connection already exists, just leave it alone
     } else {
-      console.log("creating connection...");
+      const newReleaseStageConnection = {
+        from_stage: params.source,
+        to_stage: params.target,
+      };
+      const createResult = await CreateReleaseStageConnection(
+        newReleaseStageConnection,
+      );
+      if (createResult.ok) {
+        props.setUpdateConnections(!props.updateConnections);
+        toast({
+          title: "Stage Connection Created",
+          status: "success",
+          isClosable: true,
+          duration: 5000,
+        });
+      } else {
+        toast({
+          title: "Unable To Create Connection",
+          status: "error",
+          isClosable: true,
+          duration: 5000,
+        });
+      }
     }
   };
 

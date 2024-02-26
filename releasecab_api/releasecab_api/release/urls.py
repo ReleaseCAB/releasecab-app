@@ -9,8 +9,9 @@ from .views.release_config_views import (AdminReleaseConfigDetail,
                                          AdminReleaseConfigList,
                                          ReleaseConfigByTenantId)
 from .views.release_connections_views import (
-    ReleaseConnectionDeleteAPIView, ReleaseStageConnectionsByTenantId,
-    ReleaseStageConnectionsView, ReleaseStageConnectionUpdateView)
+    ReleaseConnectionCreate, ReleaseConnectionDeleteAPIView,
+    ReleaseStageConnectionsByTenantId, ReleaseStageConnectionsView,
+    ReleaseStageConnectionUpdateView)
 from .views.release_env_views import (AdminReleaseEnvironmentDetail,
                                       AdminReleaseEnvironmentList,
                                       ReleaseEnvCreateView,
@@ -167,6 +168,9 @@ urlpatterns = [
         'release-stage-connections/delete/<int:pk>/',
         ReleaseConnectionDeleteAPIView.as_view(),
         name='release-stage-connection-delete'),
+    path('release-stage-connections/create/',
+         ReleaseConnectionCreate.as_view(),
+         name='release-stage-connection-create'),
     # Release Config
     path('release-config/',
          ReleaseConfigByTenantId.as_view(), name='release-config-list'),

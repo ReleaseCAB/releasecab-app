@@ -60,6 +60,19 @@ export const CreateReleaseStage = async (releaseStage) => {
   return response;
 };
 
+export const CreateReleaseStageConnection = async (releaseStageConnection) => {
+  await ApiAuth();
+  const response = await fetch(urlConstants.createReleaseStageConnection, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.access_token}`,
+    },
+    body: JSON.stringify(releaseStageConnection),
+  });
+  return response;
+};
+
 export const GetReleaseEnvs = async (
   disablePagination,
   page,

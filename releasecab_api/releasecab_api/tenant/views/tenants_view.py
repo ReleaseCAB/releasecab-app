@@ -59,7 +59,7 @@ class MyTenant(RetrieveAPIView):
 
 class FindTenantByInviteCodeView(CreateAPIView):
     """
-    GET the tenant based on the invite code, no authentication is required
+    GET the tenant based on the invite code, no permissions is required
     """
     authentication_classes = [JWTAuthentication, SessionAuthentication]
     serializer_class = TenantSerializer

@@ -1,8 +1,8 @@
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.generics import (DestroyAPIView, ListAPIView,
-                                     RetrieveAPIView, UpdateAPIView,
-                                     get_object_or_404)
+from rest_framework.generics import (CreateAPIView, DestroyAPIView,
+                                     ListAPIView, RetrieveAPIView,
+                                     UpdateAPIView, get_object_or_404)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -216,8 +216,8 @@ class ReleaseConnectionDeleteAPIView(DestroyAPIView):
     '''
     DELETE a release connection, requires tenant owner permissions
     '''
-    permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated, IsTenantOwnerPermission]
 
     def get_queryset(self):
         return ReleaseStageConnection.objects.all()
@@ -243,3 +243,26 @@ class ReleaseConnectionDeleteAPIView(DestroyAPIView):
             message_body,
             False)
         super(ReleaseConnectionDeleteAPIView, self).perform_destroy(instance)
+
+
+class ReleaseConnectionCreate(CreateAPIView):
+    """
+    POST a new stage connection. Tenant owner permission required
+    """
+    authentication_classes = [JWTAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated, IsTenantOwnerPermission]
+    serializer_class = ReleaseStageConnectionSerializer
+
+    def perform_create(self, serializer):
+        tenant = self.request.user.tenant
+        serializer.validated_data['tenant'] = tenant
+        connection = serializer.save()
+        message_title = f"Release Connection from '{connection.from_stage}'\
+            to '{connection.to_stage}' Was Created"
+        message_body = f"Release connection from '{connection.from_stage}'\
+            to '{connection.to_stage}' was created"
+        CommunicationHelpers.create_new_message(
+            self.request.user,
+            message_title,
+            message_body,
+            False)
