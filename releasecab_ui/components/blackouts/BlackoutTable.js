@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import {
   Badge,
   Box,
@@ -15,12 +13,14 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { FiEdit2, FiEye } from "react-icons/fi";
-import { IoArrowDown, IoArrowUp } from "react-icons/io5";
-import { ConvertTimeToLocale } from "@utils/TimeConverter";
-import { store } from "../../redux/store";
 import { Pagination } from "@components/paginiation";
 import { FetchBlackoutForTenant } from "@services/BlackoutApi";
+import { ConvertTimeToLocale } from "@utils/TimeConverter";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { FiEdit2, FiEye } from "react-icons/fi";
+import { IoArrowDown, IoArrowUp } from "react-icons/io5";
+import { store } from "../../redux/store";
 
 export const BlackoutTable = (props) => {
   const router = useRouter();

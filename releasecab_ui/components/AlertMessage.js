@@ -1,10 +1,10 @@
-import { useEffect, useRef } from "react";
 import {
   Alert,
+  AlertDescription,
   AlertIcon,
   AlertTitle,
-  AlertDescription,
 } from "@chakra-ui/react";
+import { useEffect, useRef } from "react";
 
 export const AlertMessage = ({ message, type, title }) => {
   const alertRef = useRef(null);

@@ -1,6 +1,3 @@
-import { useState } from "react";
-import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
 import {
   Box,
   Button,
@@ -10,12 +7,15 @@ import {
   StackDivider,
   Text,
 } from "@chakra-ui/react";
+import {
+  GetUserProfile,
+  UpdateUserProfileOnboardingComplete,
+} from "@services/UserApi";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { AlertMessage } from "../AlertMessage";
 import { OnboardingPageHeader } from "./OnboardingPageHeader";
-import {
-  UpdateUserProfileOnboardingComplete,
-  GetUserProfile,
-} from "@services/UserApi";
 
 export const OnboardingGetReleasing = (props) => {
   const [error, setError] = useState(null);

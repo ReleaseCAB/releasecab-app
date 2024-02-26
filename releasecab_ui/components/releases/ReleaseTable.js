@@ -1,17 +1,16 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import {
   Badge,
   Box,
-  Checkbox,
   Center,
+  Checkbox,
   Divider,
   FormControl,
   HStack,
+  Heading,
   IconButton,
   Select,
-  Spinner,
   SimpleGrid,
+  Spinner,
   Table,
   Tbody,
   Td,
@@ -19,15 +18,19 @@ import {
   Th,
   Thead,
   Tr,
-  Heading,
 } from "@chakra-ui/react";
+import { Pagination } from "@components/paginiation";
+import {
+  FetchReleaseForTenant,
+  GetReleaseEnvs,
+  GetReleaseTypes,
+} from "@services/ReleaseApi";
+import { ConvertTimeToLocale } from "@utils/TimeConverter";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { FiEdit2, FiEye } from "react-icons/fi";
 import { IoArrowDown, IoArrowUp } from "react-icons/io5";
-import { ConvertTimeToLocale } from "@utils/TimeConverter";
 import { store } from "../../redux/store";
-import { Pagination } from "@components/paginiation";
-import { FetchReleaseForTenant } from "@services/ReleaseApi";
-import { GetReleaseEnvs, GetReleaseTypes } from "@services/ReleaseApi";
 
 export const ReleaseTable = () => {
   const router = useRouter();

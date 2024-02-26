@@ -1,24 +1,21 @@
-import { useEffect, useState } from "react";
 import {
   Box,
   Stack,
   Tab,
-  TabPanels,
-  TabPanel,
   TabList,
+  TabPanel,
+  TabPanels,
   Tabs,
-  Spinner,
 } from "@chakra-ui/react";
+import { Header } from "@components/Header";
 import { Layout } from "@components/Layout";
 import { AppShell } from "@components/app-shell/AppShell";
-import { WithAuthGuard } from "@utils/auth/AuthGuard";
-import { Header } from "@components/Header";
-import { UserManagementTable } from "@components/user-management/UserManagementTable";
-import { TeamManagementTable } from "@components/user-management/TeamManagementTable";
 import { InvitedUserManagementTable } from "@components/user-management/InvitedUserManagementTable";
 import { RolesManagementTable } from "@components/user-management/RolesManagementTable";
+import { TeamManagementTable } from "@components/user-management/TeamManagementTable";
+import { UserManagementTable } from "@components/user-management/UserManagementTable";
+import { WithAuthGuard } from "@utils/auth/AuthGuard";
 
-// TODO: Add breadcrumbs to this and all child pages to they can redirect back easily
 const UserManagement = () => {
   const pageTitle = "User Management";
 

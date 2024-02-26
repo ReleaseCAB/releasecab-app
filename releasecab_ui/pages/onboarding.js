@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
+import { Header } from "@components/Header";
 import { Layout } from "@components/Layout";
 import { AppShell } from "@components/app-shell/AppShell";
-import { WithAuthGuard } from "@utils/auth/AuthGuard";
-import { Header } from "@components/Header";
-import { Progress } from "@components/progress-stepper/Progress";
-import { OnboardingSteps } from "@constants/OnboardingSteps";
-import { OnboardingRoleForm } from "@components/onboarding/OnboardingRoleForm";
+import { OnboardingGetReleasing } from "@components/onboarding/OnboardingGetReleasing";
 import { OnboardingInviteUsersForm } from "@components/onboarding/OnboardingInviteUsersForm";
-import { GetUserProfile } from "@services/UserApi";
 import { OnboardingReleaseEnvs } from "@components/onboarding/OnboardingReleaseEnvs";
 import { OnboardingReleaseTypes } from "@components/onboarding/OnboardingReleaseTypes";
-import { OnboardingGetReleasing } from "@components/onboarding/OnboardingGetReleasing";
+import { OnboardingRoleForm } from "@components/onboarding/OnboardingRoleForm";
 import { OnboardingTeamForm } from "@components/onboarding/OnboardingTeamForm";
+import { Progress } from "@components/progress-stepper/Progress";
+import { OnboardingSteps } from "@constants/OnboardingSteps";
+import { GetUserProfile } from "@services/UserApi";
+import { WithAuthGuard } from "@utils/auth/AuthGuard";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const OnboardingPage = () => {
   const [user, setUser] = useState({});

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { BaseEdge, EdgeLabelRenderer, getBezierPath } from "reactflow";
 import { ApproversModal } from "./ApproversModal";
 

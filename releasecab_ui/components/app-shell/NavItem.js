@@ -1,6 +1,6 @@
 import { Box, HStack, Text } from "@chakra-ui/react";
-import { BsCaretRightFill } from "react-icons/bs";
 import Link from "next/link";
+import { BsCaretRightFill } from "react-icons/bs";
 
 export const NavItem = (props) => {
   const { active, subtle, icon, children, label, endElement, href } = props;

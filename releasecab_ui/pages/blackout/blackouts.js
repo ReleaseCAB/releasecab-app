@@ -1,12 +1,12 @@
-import { useState } from "react";
 import { Box, Button, ButtonGroup, Stack } from "@chakra-ui/react";
+import { Header } from "@components/Header";
 import { Layout } from "@components/Layout";
 import { AppShell } from "@components/app-shell/AppShell";
-import { WithAuthGuard } from "@utils/auth/AuthGuard";
-import { Header } from "@components/Header";
-import { BiCalendarWeek, BiListUl } from "react-icons/bi";
-import { BlackoutTable } from "@components/blackouts/BlackoutTable";
 import { BlackoutCalendar } from "@components/blackouts/BlackoutCalendar";
+import { BlackoutTable } from "@components/blackouts/BlackoutTable";
+import { WithAuthGuard } from "@utils/auth/AuthGuard";
+import { useState } from "react";
+import { BiCalendarWeek, BiListUl } from "react-icons/bi";
 
 const Blackouts = () => {
   const [view, setView] = useState("list");

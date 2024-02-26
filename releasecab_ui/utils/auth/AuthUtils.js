@@ -1,5 +1,5 @@
-import jwt_decode from "jwt-decode";
 import { RefreshToken } from "@services/UserApi";
+import jwt_decode from "jwt-decode";
 
 export const CheckUserLoggedIn = async () => {
   // If they don't have an access/refresh token, assume they are not logged in

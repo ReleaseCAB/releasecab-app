@@ -1,5 +1,5 @@
 import { createStore } from "redux";
-import { persistStore, persistReducer } from "redux-persist";
+import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
 const initialState = {
@@ -55,4 +55,4 @@ if (
 
 const persistor = persistStore(store);
 
-export { store, persistor };
+export { persistor, store };

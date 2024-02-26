@@ -23,8 +23,12 @@ export const EditReleaseStage = ({
   const router = useRouter();
   const [error, setError] = useState("");
   const [releaseStageName, setReleaseStageName] = useState(releaseStage.name);
-  const [selectedFromStages, setSelectedFromStages] = useState(connections.fromStages);
-  const [selectedToStages, setSelectedToStages] = useState(connections.toStages);
+  const [selectedFromStages, setSelectedFromStages] = useState(
+    connections.fromStages,
+  );
+  const [selectedToStages, setSelectedToStages] = useState(
+    connections.toStages,
+  );
   const [releaseStageDescription, setReleaseStageDescription] = useState(
     releaseStage.description,
   );
@@ -32,11 +36,11 @@ export const EditReleaseStage = ({
   const toast = useToast();
 
   const formatReleaseStages = () => {
-    return releaseStages?.map(item => ({
+    return releaseStages?.map((item) => ({
       label: item.name,
-      value: item.id
+      value: item.id,
     }));
-  }
+  };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();

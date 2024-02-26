@@ -1,4 +1,4 @@
-import { Badge, Box, Grid, GridItem, Heading, Text } from "@chakra-ui/react";
+import { Box, Grid, GridItem, Heading, Text } from "@chakra-ui/react";
 
 export const ViewRole = ({ role }) => {
   return (
