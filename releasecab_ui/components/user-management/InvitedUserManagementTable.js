@@ -26,6 +26,7 @@ import { Dropzone } from "@components/Dropzone";
 import { Pagination } from "@components/paginiation";
 import {
   CreateInvitedUser,
+  DeleteInvitedUser,
   GetInvitedUser,
   GetMyTenant,
 } from "@services/TenantApi";
@@ -142,6 +143,26 @@ export const InvitedUserManagementTable = () => {
       reader.readAsText(file);
     }
   }, [file]);
+
+  const uninviteUser = async (userId) => {
+    const deletedResult = await DeleteInvitedUser(userId);
+    if (deletedResult.ok) {
+      setUpdate(!update);
+      toast({
+        title: "Successfully Uninvited User",
+        status: "success",
+        isClosable: true,
+        duration: 5000,
+      });
+    } else {
+      toast({
+        title: "Error Uninviting User",
+        status: "error",
+        isClosable: true,
+        duration: 5000,
+      });
+    }
+  };
 
   return (
     <>
@@ -275,7 +296,19 @@ export const InvitedUserManagementTable = () => {
                   </Td>
                   <Td>{user.has_joined ? "true" : "false"}</Td>
                   <Td></Td>
-                  <Td></Td>
+                  <Td>
+                    {!user.has_joined && (
+                      <Button
+                        bg="brand.button_enabled"
+                        color="brand.white_text"
+                        size={"sm"}
+                        mt={5}
+                        onClick={() => uninviteUser(user.id)}
+                      >
+                        Uninvite User
+                      </Button>
+                    )}
+                  </Td>
                 </Tr>
               ))}
             </Tbody>
