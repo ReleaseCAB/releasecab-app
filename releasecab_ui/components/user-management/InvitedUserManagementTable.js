@@ -302,7 +302,6 @@ export const InvitedUserManagementTable = () => {
                         bg="brand.button_enabled"
                         color="brand.white_text"
                         size={"sm"}
-                        mt={5}
                         onClick={() => uninviteUser(user.id)}
                       >
                         Uninvite User
