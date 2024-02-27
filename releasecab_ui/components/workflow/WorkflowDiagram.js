@@ -83,7 +83,7 @@ export const WorkflowDiagram = (props) => {
   };
 
   //Handle an edge update
-  const onEdgeUpdate = useCallback((oldEdge, newConnection) => {
+  const onEdgeUpdate = useCallback(async (oldEdge, newConnection) => {
     edgeUpdateSuccessful.current = true;
     const matchingConnection = props.releaseStageConnections.find(
       (connection) => {
@@ -94,49 +94,95 @@ export const WorkflowDiagram = (props) => {
       },
     );
     if (matchingConnection) {
-      console.log("Same connection, not updating");
+      console.log("HERE");
+      // Existing connection, nothing to update
     } else {
-      console.log("New connection, updating");
-    }
-  }, []);
-
-  //Handle an edge delete
-  const onEdgeUpdateEnd = useCallback(async (_, edge) => {
-    setDeleteEdge(edge);
-    setIsDialogOpen(true);
-  }, []);
-
-  const onDeleteAction = async (action) => {
-    if (action === "delete") {
-      if (!edgeUpdateSuccessful.current) {
-        const matchingConnection = props.releaseStageConnections.find(
-          (connection) => {
-            return (
-              connection.from_stage.toString() === deleteEdge.source &&
-              connection.to_stage.toString() === deleteEdge.target
-            );
-          },
-        );
-        if (matchingConnection) {
-          const deleteResult = await DeleteReleaseStageConnection(
-            matchingConnection.id,
+      //Delete old connection
+      const matchingConnectionToDelete = props.releaseStageConnections.find(
+        (connection) => {
+          return (
+            connection.from_stage.toString() === oldEdge.source &&
+            connection.to_stage.toString() === oldEdge.target
           );
-          if (deleteResult.ok) {
+        },
+      );
+      if (matchingConnectionToDelete) {
+        const deleteResult = await DeleteReleaseStageConnection(
+          matchingConnectionToDelete.id,
+        );
+        if (deleteResult.ok) {
+          const newReleaseStageConnection = {
+            from_stage: newConnection.source,
+            to_stage: newConnection.target,
+          };
+          const createResult = await CreateReleaseStageConnection(
+            newReleaseStageConnection,
+          );
+          if (createResult.ok) {
             props.setUpdateConnections(!props.updateConnections);
             toast({
-              title: "Stage Connection Deleted",
+              title: "Stage Connection Updated",
               status: "success",
               isClosable: true,
               duration: 5000,
             });
           } else {
             toast({
-              title: "Unable To Delete Connection",
+              title: "Unable To Update Connection",
               status: "error",
               isClosable: true,
               duration: 5000,
             });
           }
+        } else {
+          toast({
+            title: "Unable To Update Connection",
+            status: "error",
+            isClosable: true,
+            duration: 5000,
+          });
+        }
+      } else {
+        toast({
+          title: "Unable To Update Connection",
+          status: "error",
+          isClosable: true,
+          duration: 5000,
+        });
+      }
+    }
+  }, []);
+
+  //Handle an edge delete
+  const onEdgeUpdateEnd = useCallback(async (_, edge) => {
+    if (!edgeUpdateSuccessful.current) {
+      setDeleteEdge(edge);
+      setIsDialogOpen(true);
+    }
+  }, []);
+
+  const onDeleteAction = async (action) => {
+    if (action === "delete") {
+      const matchingConnection = props.releaseStageConnections.find(
+        (connection) => {
+          return (
+            connection.from_stage.toString() === deleteEdge.source &&
+            connection.to_stage.toString() === deleteEdge.target
+          );
+        },
+      );
+      if (matchingConnection) {
+        const deleteResult = await DeleteReleaseStageConnection(
+          matchingConnection.id,
+        );
+        if (deleteResult.ok) {
+          props.setUpdateConnections(!props.updateConnections);
+          toast({
+            title: "Stage Connection Deleted",
+            status: "success",
+            isClosable: true,
+            duration: 5000,
+          });
         } else {
           toast({
             title: "Unable To Delete Connection",
@@ -145,6 +191,13 @@ export const WorkflowDiagram = (props) => {
             duration: 5000,
           });
         }
+      } else {
+        toast({
+          title: "Unable To Delete Connection",
+          status: "error",
+          isClosable: true,
+          duration: 5000,
+        });
       }
     } else {
       // Take no action on cancel

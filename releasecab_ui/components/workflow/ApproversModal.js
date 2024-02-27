@@ -93,7 +93,6 @@ export const ApproversModal = ({ isOpen, onClose, data }) => {
         });
         onClose();
       } else {
-        // Handle error
         toast({
           title: "Error Updating Approvers",
           status: "error",
@@ -102,7 +101,6 @@ export const ApproversModal = ({ isOpen, onClose, data }) => {
         });
       }
     } catch (error) {
-      // Handle error
       console.error("Error updating approvers:", error);
       toast({
         title: "Error Updating Approvers",
