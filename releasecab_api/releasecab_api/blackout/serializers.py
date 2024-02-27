@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from django.utils import timezone
 from rest_framework import serializers
 
@@ -45,7 +43,7 @@ class BlackoutSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         data.pop('tenant', None)
-        current_date = datetime.now()
+        current_date = timezone.now()
         start_date = data['start_date']
         end_date = data['end_date']
         if start_date and end_date:
