@@ -43,17 +43,17 @@ Road Map
 +---------+-----------------+-----------------+
 | Version |   Update Name   | Planned Release |
 +=========+=================+=================+
-| 0.0.1   | Alpha Release   | Current         |
+| 1.0.0   | Alpha Release   | Current         |
 +---------+-----------------+-----------------+
-| 0.0.2   | Quality of Life | April 2024      |
+| 1.0.1   | Quality of Life | April 2024      |
 +---------+-----------------+-----------------+
-| 0.0.3   | Needed Features | May 2024        |
+| 1.0.2   | Needed Features | May 2024        |
 +---------+-----------------+-----------------+
-| 0.0.4   | Frontend Revamp | May 2024        |
+| 1.0.3   | Frontend Revamp | May 2024        |
 +---------+-----------------+-----------------+
-| 0.0.5   | Production Ready| July 2024       |
+| 1.0.4   | Production Ready| July 2024       |
 +---------+-----------------+-----------------+
-| 0.1.0   | Beta Release    |  Aug 2024       |
+| 1.1.0   | Beta Release    |  Aug 2024       |
 +---------+-----------------+-----------------+
 
 See GitHub issues for what is slotted for each of these future versions
