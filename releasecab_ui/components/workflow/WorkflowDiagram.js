@@ -95,7 +95,6 @@ export const WorkflowDiagram = (props) => {
         },
       );
       if (matchingConnection) {
-        console.log("HERE");
         // Existing connection, nothing to update
       } else {
         //Delete old connection
