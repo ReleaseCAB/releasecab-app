@@ -83,49 +83,58 @@ export const WorkflowDiagram = (props) => {
   };
 
   //Handle an edge update
-  const onEdgeUpdate = useCallback(async (oldEdge, newConnection) => {
-    edgeUpdateSuccessful.current = true;
-    const matchingConnection = props.releaseStageConnections.find(
-      (connection) => {
-        return (
-          connection.from_stage.toString() === newConnection.source &&
-          connection.to_stage.toString() === newConnection.target
-        );
-      },
-    );
-    if (matchingConnection) {
-      console.log("HERE");
-      // Existing connection, nothing to update
-    } else {
-      //Delete old connection
-      const matchingConnectionToDelete = props.releaseStageConnections.find(
+  const onEdgeUpdate = useCallback(
+    async (oldEdge, newConnection) => {
+      edgeUpdateSuccessful.current = true;
+      const matchingConnection = props.releaseStageConnections.find(
         (connection) => {
           return (
-            connection.from_stage.toString() === oldEdge.source &&
-            connection.to_stage.toString() === oldEdge.target
+            connection.from_stage.toString() === newConnection.source &&
+            connection.to_stage.toString() === newConnection.target
           );
         },
       );
-      if (matchingConnectionToDelete) {
-        const deleteResult = await DeleteReleaseStageConnection(
-          matchingConnectionToDelete.id,
+      if (matchingConnection) {
+        console.log("HERE");
+        // Existing connection, nothing to update
+      } else {
+        //Delete old connection
+        const matchingConnectionToDelete = props.releaseStageConnections.find(
+          (connection) => {
+            return (
+              connection.from_stage.toString() === oldEdge.source &&
+              connection.to_stage.toString() === oldEdge.target
+            );
+          },
         );
-        if (deleteResult.ok) {
-          const newReleaseStageConnection = {
-            from_stage: newConnection.source,
-            to_stage: newConnection.target,
-          };
-          const createResult = await CreateReleaseStageConnection(
-            newReleaseStageConnection,
+        if (matchingConnectionToDelete) {
+          const deleteResult = await DeleteReleaseStageConnection(
+            matchingConnectionToDelete.id,
           );
-          if (createResult.ok) {
-            props.setUpdateConnections(!props.updateConnections);
-            toast({
-              title: "Stage Connection Updated",
-              status: "success",
-              isClosable: true,
-              duration: 5000,
-            });
+          if (deleteResult.ok) {
+            const newReleaseStageConnection = {
+              from_stage: newConnection.source,
+              to_stage: newConnection.target,
+            };
+            const createResult = await CreateReleaseStageConnection(
+              newReleaseStageConnection,
+            );
+            if (createResult.ok) {
+              props.setUpdateConnections(!props.updateConnections);
+              toast({
+                title: "Stage Connection Updated",
+                status: "success",
+                isClosable: true,
+                duration: 5000,
+              });
+            } else {
+              toast({
+                title: "Unable To Update Connection",
+                status: "error",
+                isClosable: true,
+                duration: 5000,
+              });
+            }
           } else {
             toast({
               title: "Unable To Update Connection",
@@ -142,16 +151,10 @@ export const WorkflowDiagram = (props) => {
             duration: 5000,
           });
         }
-      } else {
-        toast({
-          title: "Unable To Update Connection",
-          status: "error",
-          isClosable: true,
-          duration: 5000,
-        });
       }
-    }
-  }, []);
+    },
+    [props.releaseStageConnections],
+  );
 
   //Handle an edge delete
   const onEdgeUpdateEnd = useCallback(async (_, edge) => {
