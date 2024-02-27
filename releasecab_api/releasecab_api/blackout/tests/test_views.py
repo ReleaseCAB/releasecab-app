@@ -81,8 +81,8 @@ class BlackoutViewsTest(TestCase):
         payload = {
             "name": "Test Blackout 2",
             "description": "Test Description 2",
-            "start_date": datetime.now(),
-            "end_date": datetime.now() + timedelta(hours=1),
+            "start_date": datetime.now() + timedelta(hours=1),
+            "end_date": datetime.now() + timedelta(hours=2),
             "release_environment": [self.environment.pk]
         }
         response = self.client.post(url, payload, format='json')
@@ -147,7 +147,7 @@ class BlackoutViewsTest(TestCase):
         payload = {
             "name": "Updated Blackout Name",
             "description": "Updated Description",
-            "start_date": datetime.now(),
+            "start_date": datetime.now() + timedelta(hours=1),
             "end_date": datetime.now() + timedelta(hours=2),
             "release_environments": [self.environment.pk]
         }
