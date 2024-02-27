@@ -43,12 +43,16 @@ class BlackoutSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         data.pop('tenant', None)
+        current_date = timezone.now()
         start_date = data['start_date']
         end_date = data['end_date']
         if start_date and end_date:
             if start_date >= end_date:
                 raise serializers.ValidationError(
                     "End date must be after the start date.")
+            if start_date < current_date or end_date < current_date:
+                raise serializers.ValidationError(
+                    "Dates cannot be in the past.")
         return data
 
     def get_owner_name(self, obj):

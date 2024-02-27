@@ -64,9 +64,15 @@ const CreateBlackout = () => {
   };
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    const currentDate = new Date();
     if (endDate && startDate) {
       if (endDate <= startDate) {
         setError("End date must be after start date");
+        return;
+      }
+      if (endDate < currentDate || startDate < currentDate) {
+        setError("Dates cannot be in the past");
         return;
       }
     }
