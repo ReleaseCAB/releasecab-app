@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
 import { Spinner, Stack } from "@chakra-ui/react";
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import moment from "moment";
-import "react-big-calendar/lib/css/react-big-calendar.css";
 import { FetchBlackoutForTenantCalendar } from "@services/BlackoutApi";
+import moment from "moment";
+import { useEffect, useState } from "react";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import "react-big-calendar/lib/css/react-big-calendar.css";
 
 export const BlackoutCalendar = () => {
   const [transformedBlackouts, setTransformedBlackouts] = useState([]);

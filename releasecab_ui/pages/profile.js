@@ -1,23 +1,22 @@
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import {
   Box,
-  Stack,
   Button,
   Flex,
   FormControl,
   FormLabel,
   Input,
+  Stack,
   StackDivider,
 } from "@chakra-ui/react";
+import { AlertMessage } from "@components/AlertMessage";
+import { Header } from "@components/Header";
 import { Layout } from "@components/Layout";
 import { AppShell } from "@components/app-shell/AppShell";
+import { GetUserProfile, UpdateUserProfile } from "@services/UserApi";
 import { WithAuthGuard } from "@utils/auth/AuthGuard";
-import { Header } from "@components/Header";
-import { GetUserProfile } from "@services/UserApi";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { store } from "../redux/store";
-import { AlertMessage } from "@components/AlertMessage";
-import { UpdateUserProfile } from "@services/UserApi";
 
 const Index = () => {
   const pageTitle = "Profile";

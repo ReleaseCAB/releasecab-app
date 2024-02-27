@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import { Box } from "@chakra-ui/react";
+import { Header } from "@components/Header";
 import { Layout } from "@components/Layout";
 import { AppShell } from "@components/app-shell/AppShell";
-import { WithAuthGuard } from "@utils/auth/AuthGuard";
-import { Header } from "@components/Header";
-import {
-  FetchReleaseStageConnectionsForTenant,
-  FetchReleaseConfigForTenant,
-} from "@services/ReleaseApi";
-import { GetReleaseStages } from "@services/ReleaseApi";
 import { WorkflowDiagram } from "@components/workflow/WorkflowDiagram";
+import {
+  FetchReleaseConfigForTenant,
+  FetchReleaseStageConnectionsForTenant,
+  GetReleaseStages,
+} from "@services/ReleaseApi";
 import { GetRoles } from "@services/RoleApi";
 import { GetTeams } from "@services/TeamApi";
+import { WithAuthGuard } from "@utils/auth/AuthGuard";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
 const Workflows = () => {
   const pageTitle = "Workflows";
@@ -24,6 +24,7 @@ const Workflows = () => {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(false);
   const [teamsLoading, setTeamsLoading] = useState(true);
+  const [updateConnections, setUpdateConnections] = useState(false);
 
   const fetchReleaseStages = async () => {
     setLoading(true);
@@ -92,6 +93,10 @@ const Workflows = () => {
     fetchReleaseConfig();
   }, []);
 
+  useEffect(() => {
+    fetchReleaseStageConnections();
+  }, [updateConnections]);
+
   const renderContent = () => {
     return (
       <>
@@ -116,6 +121,8 @@ const Workflows = () => {
                 releaseStages={releaseStages}
                 roles={roles}
                 teams={teams}
+                updateConnections={updateConnections}
+                setUpdateConnections={setUpdateConnections}
               />
             )}
         </Box>

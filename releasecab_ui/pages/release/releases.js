@@ -1,12 +1,12 @@
-import { useState } from "react";
 import { Box, Button, ButtonGroup, Stack } from "@chakra-ui/react";
+import { Header } from "@components/Header";
 import { Layout } from "@components/Layout";
 import { AppShell } from "@components/app-shell/AppShell";
-import { WithAuthGuard } from "@utils/auth/AuthGuard";
-import { Header } from "@components/Header";
-import { BiCalendarWeek, BiListUl } from "react-icons/bi";
-import { ReleaseTable } from "@components/releases/ReleaseTable";
 import { ReleaseCalendar } from "@components/releases/ReleaseCalendar";
+import { ReleaseTable } from "@components/releases/ReleaseTable";
+import { WithAuthGuard } from "@utils/auth/AuthGuard";
+import { useState } from "react";
+import { BiCalendarWeek, BiListUl } from "react-icons/bi";
 
 const Releases = () => {
   const [view, setView] = useState("list");

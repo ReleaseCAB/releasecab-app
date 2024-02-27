@@ -1,6 +1,7 @@
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.generics import (ListAPIView, RetrieveAPIView,
+from rest_framework.generics import (CreateAPIView, DestroyAPIView,
+                                     ListAPIView, RetrieveAPIView,
                                      UpdateAPIView, get_object_or_404)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -209,3 +210,59 @@ class ReleaseStageConnectionsView(APIView):
                     "error": f"ReleaseStage with id \
                         {release_stage_id} does not exist"},
                 status=status.HTTP_404_NOT_FOUND)
+
+
+class ReleaseConnectionDeleteAPIView(DestroyAPIView):
+    '''
+    DELETE a release connection, requires tenant owner permissions
+    '''
+    authentication_classes = [JWTAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated, IsTenantOwnerPermission]
+
+    def get_queryset(self):
+        return ReleaseStageConnection.objects.all()
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        lookup_field = self.kwargs.get('pk')
+        obj = get_object_or_404(
+            queryset,
+            id=lookup_field,
+            tenant=self.request.user.tenant)
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    def perform_destroy(self, instance):
+        message_title = f"Release Connection from '{instance.from_stage}'\
+            to '{instance.to_stage}' Was Deleted"
+        message_body = f"Release connection from '{instance.from_stage}'\
+            to '{instance.to_stage}' was deleted"
+        CommunicationHelpers.create_new_message(
+            self.request.user,
+            message_title,
+            message_body,
+            False)
+        super(ReleaseConnectionDeleteAPIView, self).perform_destroy(instance)
+
+
+class ReleaseConnectionCreate(CreateAPIView):
+    """
+    POST a new stage connection. Tenant owner permission required
+    """
+    authentication_classes = [JWTAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated, IsTenantOwnerPermission]
+    serializer_class = ReleaseStageConnectionSerializer
+
+    def perform_create(self, serializer):
+        tenant = self.request.user.tenant
+        serializer.validated_data['tenant'] = tenant
+        connection = serializer.save()
+        message_title = f"Release Connection from '{connection.from_stage}'\
+            to '{connection.to_stage}' Was Created"
+        message_body = f"Release connection from '{connection.from_stage}'\
+            to '{connection.to_stage}' was created"
+        CommunicationHelpers.create_new_message(
+            self.request.user,
+            message_title,
+            message_body,
+            False)

@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   Button,
   Center,
@@ -9,6 +8,7 @@ import {
   useColorModeValue,
   VStack,
 } from "@chakra-ui/react";
+import { useState } from "react";
 import { FiUploadCloud } from "react-icons/fi";
 
 export const Dropzone = (props) => {

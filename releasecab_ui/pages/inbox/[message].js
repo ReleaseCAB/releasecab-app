@@ -4,20 +4,16 @@ import { Layout } from "@components/Layout";
 import { AppShell } from "@components/app-shell/AppShell";
 import { FetchCommunication } from "@services/CommunicationApi";
 import { WithAuthGuard } from "@utils/auth/AuthGuard";
-import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const Message = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const messageId = router.query.message;
   const pageTitle = "View Message";
   const [messageTitle, setMessageTitle] = useState("");
   const [loading, setLoading] = useState(true);
-  const [pageMode, setPageMode] = useState("");
   const [message, setMessage] = useState(null);
-  const [profile, setProfile] = useState({});
   const [breadcrumbs, setBreadcrumbs] = useState({});
   const [loadCount, setLoadCount] = useState(0);
 

@@ -57,6 +57,8 @@ export const urlConstants = {
   updateReleaseStage: "api/releases/release-stages/update",
   getReleaseStageConnections: "api/releases/release-stage-connections",
   updateReleaseStageConnection: "api/releases/release-stage-connections/update",
+  deleteReleaseStageConnection: "api/releases/release-stage-connections/delete",
+  createReleaseStageConnection: "api/releases/release-stage-connections/create",
   getReleaseConfig: "api/releases/release-config/",
   getNextStageConnections:
     "api/releases/release-stage-connections/get-to-stages",

@@ -1,11 +1,4 @@
-import {
-  Avatar,
-  Box,
-  Flex,
-  HStack,
-  Img,
-  useMenuButton,
-} from "@chakra-ui/react";
+import { Avatar, Box, Flex, HStack, useMenuButton } from "@chakra-ui/react";
 import { HiSelector } from "react-icons/hi";
 export const AccountSwitcherButton = (props) => {
   const buttonProps = useMenuButton(props);

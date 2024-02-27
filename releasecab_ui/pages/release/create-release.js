@@ -1,10 +1,10 @@
-import "react-datepicker/dist/react-datepicker.css";
 import { Box } from "@chakra-ui/react";
+import { Header } from "@components/Header";
 import { Layout } from "@components/Layout";
 import { AppShell } from "@components/app-shell/AppShell";
-import { WithAuthGuard } from "@utils/auth/AuthGuard";
-import { Header } from "@components/Header";
 import { CreateReleaseForm } from "@components/releases/CreateReleaseForm";
+import { WithAuthGuard } from "@utils/auth/AuthGuard";
+import "react-datepicker/dist/react-datepicker.css";
 
 const CreateRelease = () => {
   const pageTitle = "Create Release";

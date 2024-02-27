@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-import Select from "react-select";
 import {
   Box,
   Button,
@@ -7,13 +5,13 @@ import {
   FormControl,
   FormLabel,
   Input,
-  Switch,
-  useToast,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
 import { AlertMessage } from "@components/AlertMessage";
 import { UpdateReleaseEnv } from "@services/ReleaseApi";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 export const EditReleaseEnv = ({ releaseEnv }) => {
   const router = useRouter();

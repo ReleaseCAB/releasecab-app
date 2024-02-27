@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
-import { CheckUserLoggedIn } from "./AuthUtils";
 import { GetUserProfile } from "@services/UserApi";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { store } from "../../redux/store";
+import { CheckUserLoggedIn } from "./AuthUtils";
 
 export const WithAuthGuard = (WrappedComponent) => {
   const AuthGuard = (props) => {

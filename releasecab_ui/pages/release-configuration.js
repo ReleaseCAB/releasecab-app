@@ -1,21 +1,19 @@
-import { useEffect, useState } from "react";
 import {
   Box,
   Stack,
   Tab,
-  TabPanels,
-  TabPanel,
   TabList,
+  TabPanel,
+  TabPanels,
   Tabs,
-  Spinner,
 } from "@chakra-ui/react";
+import { Header } from "@components/Header";
 import { Layout } from "@components/Layout";
 import { AppShell } from "@components/app-shell/AppShell";
-import { WithAuthGuard } from "@utils/auth/AuthGuard";
-import { Header } from "@components/Header";
-import { ReleaseTypesTable } from "@components/release-configuration/ReleaseTypesTable";
 import { ReleaseEnvTable } from "@components/release-configuration/ReleaseEnvTable";
 import { ReleaseStageTable } from "@components/release-configuration/ReleaseStageTable";
+import { ReleaseTypesTable } from "@components/release-configuration/ReleaseTypesTable";
+import { WithAuthGuard } from "@utils/auth/AuthGuard";
 
 // TODO: Add breadcrumbs to this and all child pages to they can redirect back easily
 const ReleaseConfig = () => {

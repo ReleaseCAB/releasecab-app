@@ -1,4 +1,3 @@
-import React from "react";
 import { Box, Container, Stack } from "@chakra-ui/react";
 import { Step } from "./Step";
 import { useStep } from "./UseStep";

@@ -1,34 +1,56 @@
-import { useEffect, useState } from "react";
-import Select from "react-select";
 import {
   Box,
   Button,
   Flex,
   FormControl,
   FormLabel,
+  IconButton,
   Input,
   Switch,
-  useToast,
+  Tooltip,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
-import { useRouter } from "next/router";
 import { AlertMessage } from "@components/AlertMessage";
 import { UpdateReleaseStage } from "@services/ReleaseApi";
+import { useRouter } from "next/router";
+import { useState } from "react";
+import { BiHelpCircle } from "react-icons/bi";
+import Select from "react-select";
 
-export const EditReleaseStage = ({ releaseStage }) => {
+export const EditReleaseStage = ({
+  releaseStage,
+  connections,
+  releaseStages,
+}) => {
   const router = useRouter();
   const [error, setError] = useState("");
   const [releaseStageName, setReleaseStageName] = useState(releaseStage.name);
+  const [selectedFromStages, setSelectedFromStages] = useState(
+    connections.fromStages,
+  );
+  const [selectedToStages, setSelectedToStages] = useState(
+    connections.toStages,
+  );
   const [releaseStageDescription, setReleaseStageDescription] = useState(
     releaseStage.description,
   );
+  const [isEndStage, setIsEndStage] = useState(releaseStage.is_end_stage);
   const toast = useToast();
+
+  const formatReleaseStages = () => {
+    return releaseStages?.map((item) => ({
+      label: item.name,
+      value: item.id,
+    }));
+  };
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
     setError("");
     const releaseStageObj = {
       description: releaseStageDescription,
+      is_end_stage: isEndStage,
     };
     const newReleaseStage = await UpdateReleaseStage(
       releaseStageObj,
@@ -69,6 +91,69 @@ export const EditReleaseStage = ({ releaseStage }) => {
               onChange={(event) =>
                 setReleaseStageDescription(event.target.value)
               }
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>
+              From Stages
+              <Tooltip
+                label={"To change 'from stages', go to Workflow Designer"}
+              >
+                <IconButton
+                  icon={<BiHelpCircle />}
+                  colorScheme="gray"
+                  aria-label={"From Stages Help Text"}
+                  size="xs"
+                  fontSize="16px"
+                  p={1}
+                />
+              </Tooltip>
+            </FormLabel>
+            <Select
+              isDisabled
+              options={formatReleaseStages()}
+              value={selectedFromStages}
+              isMulti
+              placeholder="Select From Stages"
+              onChange={(selectedOptions) =>
+                setSelectedFromStages(selectedOptions)
+              }
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel>
+              To Stages
+              <Tooltip label={"To change 'to stages', go to Workflow Designer"}>
+                <IconButton
+                  icon={<BiHelpCircle />}
+                  colorScheme="gray"
+                  aria-label={"To Stages Help Text"}
+                  size="xs"
+                  fontSize="16px"
+                  p={1}
+                />
+              </Tooltip>
+            </FormLabel>
+            <Select
+              isDisabled
+              options={formatReleaseStages()}
+              value={selectedToStages}
+              isMulti
+              placeholder="Select To Stages"
+              onChange={(selectedOptions) =>
+                setSelectedToStages(selectedOptions)
+              }
+            />
+          </FormControl>
+          <FormControl display="flex" alignItems="center">
+            <FormLabel htmlFor="isEndStage" mb="0">
+              Is End Stage
+            </FormLabel>
+            <Switch
+              colorScheme="teal"
+              size="lg"
+              isChecked={isEndStage}
+              onChange={() => setIsEndStage(!isEndStage)}
             />
           </FormControl>
         </VStack>

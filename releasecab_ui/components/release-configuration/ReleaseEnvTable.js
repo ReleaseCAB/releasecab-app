@@ -1,17 +1,15 @@
-import { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import {
-  Button,
   Box,
+  Button,
   Center,
   Divider,
   FormControl,
   FormLabel,
   HStack,
-  Input,
   IconButton,
-  Spinner,
+  Input,
   SimpleGrid,
+  Spinner,
   Table,
   Tbody,
   Td,
@@ -20,12 +18,13 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
+import { AlertMessage } from "@components/AlertMessage";
+import { Pagination } from "@components/paginiation";
+import { AddNewReleaseEnv, GetReleaseEnvs } from "@services/ReleaseApi";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import { FiEdit2, FiEye } from "react-icons/fi";
 import { IoArrowDown, IoArrowUp } from "react-icons/io5";
-import { Pagination } from "@components/paginiation";
-import { GetReleaseEnvs } from "@services/ReleaseApi";
-import { AlertMessage } from "@components/AlertMessage";
-import { AddNewReleaseEnv } from "@services/ReleaseApi";
 
 // TODO: We don't allow delete from here. We need to figure out
 // The best way to do that

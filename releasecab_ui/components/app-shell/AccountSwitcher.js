@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import {
   Menu,
   MenuDivider,
@@ -7,8 +6,9 @@ import {
   Text,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { AccountSwitcherButton } from "./AccountSwitcherButton";
 import { BlacklistToken } from "@services/UserApi";
+import { useRouter } from "next/router";
+import { AccountSwitcherButton } from "./AccountSwitcherButton";
 
 export const AccountSwitcher = (props) => {
   const router = useRouter();
