@@ -60,7 +60,7 @@ class BlackoutSerializer(serializers.ModelSerializer):
             Q(end_date__gte=start_date, end_date__lt=end_date),
             tenant=self.context['request'].user.tenant,
             release_environment__in=self.context['request'].data.get(
-                'release_environment', None)
+                'release_environment', [])
         )
         if existing_blackouts.exists():
             raise serializers.ValidationError(
