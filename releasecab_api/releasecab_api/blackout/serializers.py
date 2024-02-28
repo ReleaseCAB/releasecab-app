@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.utils import timezone
 from rest_framework import serializers
 
@@ -53,6 +54,17 @@ class BlackoutSerializer(serializers.ModelSerializer):
             if start_date < current_date or end_date < current_date:
                 raise serializers.ValidationError(
                     "Dates cannot be in the past.")
+        existing_blackouts = Blackout.objects.filter(
+            Q(start_date__lt=end_date, end_date__gt=start_date) |
+            Q(start_date__gte=start_date, start_date__lt=end_date) |
+            Q(end_date__gte=start_date, end_date__lt=end_date),
+            tenant=self.context['request'].user.tenant,
+            release_environment__in=self.context['request'].data.get(
+                'release_environment', None)
+        )
+        if existing_blackouts.exists():
+            raise serializers.ValidationError(
+                "This blackout overlaps with an existing one.")
         return data
 
     def get_owner_name(self, obj):
