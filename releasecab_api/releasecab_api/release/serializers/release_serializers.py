@@ -19,6 +19,7 @@ class ReleaseSerializer(serializers.ModelSerializer):
     affected_teams = serializers.SerializerMethodField()
     owner_name = serializers.SerializerMethodField()
     next_stage_name = serializers.SerializerMethodField()
+    is_release_deletable = serializers.SerializerMethodField()
 
     class Meta:
         model = Release
@@ -92,6 +93,11 @@ class ReleaseSerializer(serializers.ModelSerializer):
         if obj.owner:
             return obj.owner.first_name + " " + obj.owner.last_name
         return None
+
+    def get_is_release_deletable(self, obj):
+        if obj.current_stage:
+            return obj.current_stage.allow_release_delete
+        return False
 
     def validate_current_stage_change(self, value):
         user = self.context['request'].user
