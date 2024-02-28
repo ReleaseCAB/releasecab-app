@@ -68,29 +68,34 @@ class TenantHelpers():
         planning_stage = ReleaseStage.objects.create(
             name='Planning in Progress',
             description='Planning in Progress',
+            allow_release_delete=True,
             tenant=tenant
         )
         in_progress_stage = ReleaseStage.objects.create(
             name='In Progress',
             description='In Progress',
+            allow_release_delete=False,
             tenant=tenant
         )
         ready_to_deploy_stage = ReleaseStage.objects.create(
             name='Ready To Deploy',
             description='Ready To Deploy',
+            allow_release_delete=True,
             tenant=tenant
         )
         completed_stage = ReleaseStage.objects.create(
             name='Completed',
             description='Completed',
             tenant=tenant,
-            is_end_stage=True
+            is_end_stage=True,
+            allow_release_delete=False
         )
         cancelled_stage = ReleaseStage.objects.create(
             name='Cancelled',
             description='Cancelled',
             tenant=tenant,
-            is_end_stage=True
+            is_end_stage=True,
+            allow_release_delete=True
         )
         ReleaseStageConnection.objects.create(
             from_stage=in_progress_stage,

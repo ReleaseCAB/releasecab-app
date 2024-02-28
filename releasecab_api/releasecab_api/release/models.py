@@ -62,6 +62,7 @@ class ReleaseStage(BaseReleaseCabModel):
     name = models.CharField(max_length=50)
     description = models.CharField(max_length=1000, blank=True, null=True)
     is_end_stage = models.BooleanField(default=False)
+    allow_release_delete = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
