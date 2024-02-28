@@ -88,7 +88,12 @@ const CreateBlackout = () => {
       const data = await newRelease.json();
       router.push("/blackout/" + data.id);
     } else {
-      setError("Error creating blackout");
+      if (newRelease.status === 400) {
+        const data = await newRelease.json();
+        setError(data.non_field_errors[0]);
+      } else {
+        setError("Error creating blackout");
+      }
     }
   };
 
