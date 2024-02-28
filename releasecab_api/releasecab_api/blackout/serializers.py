@@ -43,7 +43,6 @@ class BlackoutSerializer(serializers.ModelSerializer):
         return blackout
 
     def validate(self, data):
-        print(self.instance)
         data.pop('tenant', None)
         current_date = timezone.now()
         start_date = data['start_date']
