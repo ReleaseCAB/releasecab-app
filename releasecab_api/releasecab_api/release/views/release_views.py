@@ -191,22 +191,27 @@ class ReleaseDeleteAPIView(DestroyAPIView):
         self.check_object_permissions(self.request, obj)
         return obj
 
-    def perform_destroy(self, instance):
-        if self.request.user == instance.owner:
-            message_title = f"Release '{instance.name}' Was Deleted"
-            message_body = f"Release '{instance.name}' was deleted"
-            CommunicationHelpers.create_new_message(
-                self.request.user,
-                message_title,
-                message_body,
-                False)
-            super(ReleaseDeleteAPIView, self).perform_destroy(instance)
-        else:
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not instance.current_stage.allow_release_delete:
             return Response(
-                {
-                    "detail": "You do not have permission to \
-                    perform this action."},
+                {"detail": "Deletion not allowed in this stage."},
                 status=status.HTTP_403_FORBIDDEN)
+        if request.user != instance.owner:
+            return Response(
+                {"detail": "You do not have permission to perform this action."},
+                status=status.HTTP_403_FORBIDDEN)
+
+        message_title = f"Release '{instance.name}' Was Deleted"
+        message_body = f"Release '{instance.name}' was deleted"
+        CommunicationHelpers.create_new_message(
+            request.user,
+            message_title,
+            message_body,
+            False)
+
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ReleaseSearchView(ListAPIView):
