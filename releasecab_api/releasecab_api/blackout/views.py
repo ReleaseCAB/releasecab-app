@@ -201,6 +201,7 @@ class BlackoutDeleteAPIView(DestroyAPIView):
     '''
     permission_classes = [IsAuthenticated, CanCreateBlackoutsPermission]
     authentication_classes = [JWTAuthentication, SessionAuthentication]
+    serializer_class = BlackoutSerializer
 
     def get_queryset(self):
         return Blackout.objects.all()
@@ -216,19 +217,30 @@ class BlackoutDeleteAPIView(DestroyAPIView):
         self.check_object_permissions(self.request, obj)
         return obj
 
-    def perform_destroy(self, instance):
-        if self.request.user == instance.owner:
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user == instance.owner:
+            serializer = self.get_serializer(instance)
+            blackout_status = serializer.get_active_status(instance)
+            if blackout_status == 'active':
+                return Response(
+                    {"detail": "Cannot delete an active blackout."},
+                    status=status.HTTP_403_FORBIDDEN)
+            elif blackout_status == 'expired':
+                return Response(
+                    {"detail": "Cannot delete an expired blackout."},
+                    status=status.HTTP_403_FORBIDDEN)
             message_title = f"Blackout '{instance.name}' Was Deleted"
             message_body = f"Blackout '{instance.name}' was deleted"
             CommunicationHelpers.create_new_message(
-                self.request.user,
+                request.user,
                 message_title,
                 message_body,
                 False)
-            super(BlackoutDeleteAPIView, self).perform_destroy(instance)
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
         else:
             return Response(
-                {
-                    "detail": "You do not have permission to \
-                    perform this action."},
+                {"detail": "You do not have permission\
+                  to perform this action."},
                 status=status.HTTP_403_FORBIDDEN)
