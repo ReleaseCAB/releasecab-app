@@ -36,6 +36,9 @@ export const EditReleaseStage = ({
     releaseStage.description,
   );
   const [isEndStage, setIsEndStage] = useState(releaseStage.is_end_stage);
+  const [isDeletable, setIsDeletable] = useState(
+    releaseStage.allow_release_delete,
+  );
   const toast = useToast();
 
   const formatReleaseStages = () => {
@@ -51,6 +54,7 @@ export const EditReleaseStage = ({
     const releaseStageObj = {
       description: releaseStageDescription,
       is_end_stage: isEndStage,
+      allow_release_delete: isDeletable,
     };
     const newReleaseStage = await UpdateReleaseStage(
       releaseStageObj,
@@ -143,6 +147,17 @@ export const EditReleaseStage = ({
               onChange={(selectedOptions) =>
                 setSelectedToStages(selectedOptions)
               }
+            />
+          </FormControl>
+          <FormControl display="flex" alignItems="center">
+            <FormLabel htmlFor="isDeletable" mb="0">
+              Can Delete Release In This Stage
+            </FormLabel>
+            <Switch
+              colorScheme="teal"
+              size="lg"
+              isChecked={isDeletable}
+              onChange={() => setIsDeletable(!isDeletable)}
             />
           </FormControl>
           <FormControl display="flex" alignItems="center">

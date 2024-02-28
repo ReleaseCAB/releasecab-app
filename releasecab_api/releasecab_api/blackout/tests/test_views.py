@@ -52,8 +52,8 @@ class BlackoutViewsTest(TestCase):
         self.blackout = Blackout.objects.create(
             name="Test Blackout",
             description="Test Description",
-            start_date=datetime.now(),
-            end_date=datetime.now() + timedelta(hours=1),
+            start_date=datetime.now() + timedelta(hours=1),
+            end_date=datetime.now() + timedelta(hours=2),
             tenant=self.tenant,
             owner=self.admin_user
         )

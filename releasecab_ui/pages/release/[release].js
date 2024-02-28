@@ -143,15 +143,17 @@ const Release = () => {
                 >
                   View
                 </Button>
-                <Button
-                  leftIcon={<FiTrash2 />}
-                  size="sm"
-                  variant="outline"
-                  color="brand.warning"
-                  onClick={() => deleteRelease()}
-                >
-                  Delete Release
-                </Button>
+                {release.is_release_deletable && (
+                  <Button
+                    leftIcon={<FiTrash2 />}
+                    size="sm"
+                    variant="outline"
+                    color="brand.warning"
+                    onClick={() => deleteRelease()}
+                  >
+                    Delete Release
+                  </Button>
+                )}
               </>
             )}
           </ButtonGroup>
