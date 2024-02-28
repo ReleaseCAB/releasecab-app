@@ -5,6 +5,7 @@ Release CAB is a software release management and change approval board
 software aimed towards simplifying and creating an auditable software release process.
 
 Features Include:
+
 - Ability to create releases and blackouts
 - Calendar display of releases and blackouts
 - Guards to prevent releases from being created during blackout periods
