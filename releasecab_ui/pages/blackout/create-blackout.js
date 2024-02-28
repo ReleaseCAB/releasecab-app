@@ -83,12 +83,17 @@ const CreateBlackout = () => {
       end_date: endDate ? endDate.toISOString() : null,
       release_environment: environments.map((env) => env.value),
     };
-    const newRelease = await AddBlackout(releaseObj);
-    if (newRelease.ok) {
-      const data = await newRelease.json();
+    const newBlackout = await AddBlackout(releaseObj);
+    if (newBlackout.ok) {
+      const data = await newBlackout.json();
       router.push("/blackout/" + data.id);
     } else {
-      setError("Error creating blackout");
+      if (newBlackout.status === 400) {
+        const data = await newBlackout.json();
+        setError(data.non_field_errors[0]);
+      } else {
+        setError("Error creating blackout");
+      }
     }
   };
 
