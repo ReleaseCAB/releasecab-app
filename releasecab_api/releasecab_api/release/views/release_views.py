@@ -199,7 +199,8 @@ class ReleaseDeleteAPIView(DestroyAPIView):
                 status=status.HTTP_403_FORBIDDEN)
         if request.user != instance.owner:
             return Response(
-                {"detail": "You do not have permission to perform this action."},
+                {"detail": "You do not have permission to perform \
+                 this action."},
                 status=status.HTTP_403_FORBIDDEN)
 
         message_title = f"Release '{instance.name}' Was Deleted"
