@@ -132,12 +132,22 @@ export const EditReleaseForm = ({ release }) => {
         duration: 5000,
       });
     } else {
-      toast({
-        title: "Error Updating Release",
-        status: "error",
-        isClosable: true,
-        duration: 5000,
-      });
+      if (response.status === 400) {
+        const data = await response.json();
+        toast({
+          title: data.non_field_errors[0],
+          status: "error",
+          isClosable: true,
+          duration: 5000,
+        });
+      } else {
+        toast({
+          title: "Error Updating Release",
+          status: "error",
+          isClosable: true,
+          duration: 5000,
+        });
+      }
     }
   };
 
