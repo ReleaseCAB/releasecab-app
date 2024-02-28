@@ -95,7 +95,7 @@ class TenantHelpers():
             description='Cancelled',
             tenant=tenant,
             is_end_stage=True,
-            allow_release_delete=True
+            allow_release_delete=False
         )
         ReleaseStageConnection.objects.create(
             from_stage=in_progress_stage,

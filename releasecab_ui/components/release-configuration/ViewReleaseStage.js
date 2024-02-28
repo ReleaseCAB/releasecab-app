@@ -32,6 +32,12 @@ export const ViewReleaseStage = ({ releaseStage, connections }) => {
           </Text>
         </GridItem>
         <GridItem>
+          <Text fontWeight="bold">Can Delete Release In This Stage:</Text>
+        </GridItem>
+        <GridItem>
+          <Text>{releaseStage.allow_release_delete ? "true" : "false"}</Text>
+        </GridItem>
+        <GridItem>
           <Text fontWeight="bold">Is End Stage:</Text>
         </GridItem>
         <GridItem>
