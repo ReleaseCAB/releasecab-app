@@ -96,12 +96,22 @@ export const EditBlackout = ({ blackout }) => {
         duration: 5000,
       });
     } else {
-      toast({
-        title: "Error Updating Blackout",
-        status: "error",
-        isClosable: true,
-        duration: 5000,
-      });
+      if (newBlackout.status === 400) {
+        const data = await newBlackout.json();
+        toast({
+          title: data.non_field_errors[0],
+          status: "error",
+          isClosable: true,
+          duration: 5000,
+        });
+      } else {
+        toast({
+          title: "Error Updating Blackout",
+          status: "error",
+          isClosable: true,
+          duration: 5000,
+        });
+      }
     }
   };
 
