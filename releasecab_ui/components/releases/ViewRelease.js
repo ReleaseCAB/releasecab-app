@@ -14,18 +14,22 @@ import {
   Spinner,
   Text,
   Textarea,
+  Tooltip,
   useToast,
 } from "@chakra-ui/react";
 import { Pagination } from "@components/paginiation";
 import {
   AddNewReleaseComment,
+  DeleteReleaseComment,
   FetchNextStageConnections,
   GetReleaseComments,
   UpdateRelease,
 } from "@services/ReleaseApi";
+import { GetUserProfile } from "@services/UserApi";
 import { ConvertTimeToLocale } from "@utils/TimeConverter";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
+import { BiX } from "react-icons/bi";
 
 export const ViewRelease = ({ release }) => {
   const commentsRef = useRef(null);
@@ -37,6 +41,7 @@ export const ViewRelease = ({ release }) => {
   const [comments, setComments] = useState();
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(20);
+  const [profile, setProfile] = useState({});
   const [
     nextStageConnectionsWithApprover,
     setNextStageConnectionsWithApprover,
@@ -46,9 +51,17 @@ export const ViewRelease = ({ release }) => {
     setNextStageConnectionsWithoutApprover,
   ] = useState([]);
 
+  const getUserData = async () => {
+    const userProfileResponse = await GetUserProfile();
+    if (userProfileResponse.ok) {
+      const userProfile = await userProfileResponse.json();
+      setProfile(userProfile);
+    }
+  };
+
   useEffect(() => {
     fetchNextStageConnections();
-    fetchComments();
+    getUserData();
   }, []);
 
   useEffect(() => {
@@ -75,6 +88,26 @@ export const ViewRelease = ({ release }) => {
       const commentData = await commentResponse.json();
       setComments(commentData);
     }
+  };
+
+  const deleteComment = async (id) => {
+    const deleteResult = await DeleteReleaseComment(id);
+    if (deleteResult.ok) {
+      toast({
+        title: "Comment Deleted",
+        status: "success",
+        isClosable: true,
+        duration: 5000,
+      });
+    } else {
+      toast({
+        title: "Error Deleting Release",
+        status: "error",
+        isClosable: true,
+        duration: 5000,
+      });
+    }
+    fetchComments();
   };
 
   const setNewRelease = async (newStageId) => {
@@ -261,6 +294,19 @@ export const ViewRelease = ({ release }) => {
             <Text mt={2} mb={2}>
               {comment.writer_name} added a comment at{" "}
               {ConvertTimeToLocale(comment.created_at)}:
+              {profile.id === comment.writer && (
+                <Tooltip label="Delete Comment">
+                  <Button
+                    ml={"20%"}
+                    size="xs"
+                    variant="outline"
+                    colorScheme="red"
+                    onClick={() => deleteComment(comment.id)}
+                  >
+                    <BiX />
+                  </Button>
+                </Tooltip>
+              )}
             </Text>
             <Text ml={2} mb={2}>
               {comment.comment_body}

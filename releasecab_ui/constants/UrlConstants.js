@@ -65,6 +65,7 @@ export const urlConstants = {
   fetchReleaseStatsForMe: "api/releases/release-stats/me",
   fetchReleaseComments: "api/releases/release-comments",
   createReleaseComments: "api/releases/release-comments/create",
+  deleteReleaseComment: "api/releases/release-comments/delete",
   //Blackout
   createBlackout: "api/blackouts/create",
   fetchBlackout: "api/blackouts/blackout",
