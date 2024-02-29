@@ -1,6 +1,8 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
+from rest_framework.generics import (CreateAPIView, DestroyAPIView,
+                                     ListAPIView, RetrieveAPIView)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.authentication import JWTAuthentication
@@ -84,3 +86,44 @@ class ReleaseCommentCreate(CreateAPIView):
             message_title,
             message_body,
             False)
+
+
+class CommentDeleteAPIView(DestroyAPIView):
+    '''
+    DELETE a Comment only if you are the owner
+    '''
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication, SessionAuthentication]
+    serializer_class = ReleaseCommentSerializer
+
+    def get_queryset(self):
+        return ReleaseComment.objects.all()
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        lookup_field = self.kwargs.get('pk')
+        obj = get_object_or_404(
+            queryset,
+            id=lookup_field,
+            tenant=self.request.user.tenant,
+            writer=self.request.user)
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if request.user == instance.writer:
+            message_title = f"Comment '{instance.pk}' Was Deleted"
+            message_body = f"Comment '{instance.pk}' was deleted"
+            CommunicationHelpers.create_new_message(
+                request.user,
+                message_title,
+                message_body,
+                False)
+            instance.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        else:
+            return Response(
+                {"detail": "You do not have permission\
+                  to perform this action."},
+                status=status.HTTP_403_FORBIDDEN)

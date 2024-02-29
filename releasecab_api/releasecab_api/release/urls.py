@@ -3,6 +3,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 from .views.release_comment_views import (AdminReleaseCommentDetail,
                                           AdminReleaseCommentList,
+                                          CommentDeleteAPIView,
                                           ReleaseCommentCreate,
                                           ReleaseCommentRetrieve)
 from .views.release_config_views import (AdminReleaseConfigDetail,
@@ -182,6 +183,10 @@ urlpatterns = [
          ReleaseCommentCreate.as_view(), name='release-comment-create'),
     path('release-comments/<str:pk>/',
          ReleaseCommentRetrieve.as_view(), name='release-comment-detail'),
+    path(
+        'release-comments/delete/<int:pk>/',
+        CommentDeleteAPIView.as_view(),
+        name='release-comments-delete'),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
