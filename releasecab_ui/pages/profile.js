@@ -7,8 +7,8 @@ import {
   Input,
   Stack,
   StackDivider,
+  useToast,
 } from "@chakra-ui/react";
-import { AlertMessage } from "@components/AlertMessage";
 import { Header } from "@components/Header";
 import { Layout } from "@components/Layout";
 import { AppShell } from "@components/app-shell/AppShell";
@@ -21,14 +21,12 @@ import { store } from "../redux/store";
 const Index = () => {
   const pageTitle = "Profile";
   const [profile, setProfile] = useState({});
-  const [error, setError] = useState(null);
-  const [success, setSuccess] = useState(null);
-  const [warning, setWarning] = useState(null);
-  const dispatch = useDispatch();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const toast = useToast();
+  const dispatch = useDispatch();
 
   const isLoginFormValid =
     email.trim() !== "" &&
@@ -69,12 +67,22 @@ const Index = () => {
     if (saveProfileResult.ok) {
       const saveProfileBody = await saveProfileResult.json();
       if (saveProfileBody.message === "User updated successfully") {
-        setSuccess(saveProfileBody.message);
+        toast({
+          title: saveProfileBody.message,
+          status: "success",
+          isClosable: true,
+          duration: 5000,
+        });
+        await dispatch({ type: "CLEAR_USER" });
+        getUserData();
       }
     } else {
-      setError(
-        "Unable to save user profile, please try again later or contact support.",
-      );
+      toast({
+        title: "Error Updating Profile",
+        status: "error",
+        isClosable: true,
+        duration: 5000,
+      });
     }
   };
 
@@ -89,13 +97,6 @@ const Index = () => {
           pt={5}
           pl={10}
         >
-          {error && <AlertMessage message={error} type="error" title="Error" />}
-          {warning && (
-            <AlertMessage message={warning} type="warning" title="Warning" />
-          )}
-          {success && (
-            <AlertMessage message={success} type="success" title="Success" />
-          )}
           <form onSubmit={handleFormSubmit}>
             <Stack spacing="5" mt="5" mdivider={<StackDivider />}>
               <FormControl id="firstName" isRequired>
