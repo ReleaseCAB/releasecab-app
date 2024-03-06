@@ -20,6 +20,7 @@ class ReleaseSerializer(serializers.ModelSerializer):
     owner_name = serializers.SerializerMethodField()
     next_stage_name = serializers.SerializerMethodField()
     is_release_deletable = serializers.SerializerMethodField()
+    is_release_updatable = serializers.SerializerMethodField()
 
     class Meta:
         model = Release
@@ -97,6 +98,11 @@ class ReleaseSerializer(serializers.ModelSerializer):
     def get_is_release_deletable(self, obj):
         if obj.current_stage:
             return obj.current_stage.allow_release_delete
+        return False
+
+    def get_is_release_updatable(self, obj):
+        if obj.current_stage:
+            return obj.current_stage.allow_release_update
         return False
 
     def validate_current_stage_change(self, value):

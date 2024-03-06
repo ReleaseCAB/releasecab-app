@@ -123,16 +123,18 @@ const Release = () => {
           pl={10}
         >
           <ButtonGroup pt={5}>
-            {pageMode === "view" && checkIsOwner(release?.owner) && (
-              <Button
-                leftIcon={<FiEdit2 />}
-                size="sm"
-                variant="outline"
-                onClick={() => setPageMode("edit")}
-              >
-                Edit
-              </Button>
-            )}
+            {pageMode === "view" &&
+              checkIsOwner(release?.owner) &&
+              release?.is_release_updatable && (
+                <Button
+                  leftIcon={<FiEdit2 />}
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setPageMode("edit")}
+                >
+                  Edit
+                </Button>
+              )}
             {pageMode === "edit" && checkIsOwner(release?.owner) && (
               <>
                 <Button
