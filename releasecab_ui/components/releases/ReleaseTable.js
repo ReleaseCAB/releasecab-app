@@ -309,14 +309,15 @@ export const ReleaseTable = () => {
                           aria-label="View Release"
                           onClick={() => viewRelease(release.identifier)}
                         />
-                        {checkIsOwner(release.owner) && (
-                          <IconButton
-                            icon={<FiEdit2 />}
-                            variant="tertiary"
-                            aria-label="Edit Release"
-                            onClick={() => editRelease(release.identifier)}
-                          />
-                        )}
+                        {checkIsOwner(release.owner) &&
+                          release.is_release_updatable && (
+                            <IconButton
+                              icon={<FiEdit2 />}
+                              variant="tertiary"
+                              aria-label="Edit Release"
+                              onClick={() => editRelease(release.identifier)}
+                            />
+                          )}
                       </HStack>
                     </Td>
                   </Tr>

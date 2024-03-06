@@ -156,6 +156,10 @@ class ReleaseUpdateView(UpdateAPIView):
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
+        if not instance.current_stage.allow_release_update:
+            return Response(
+                {"detail": "Update not allowed in this stage."},
+                status=status.HTTP_403_FORBIDDEN)
         serializer = self.get_serializer(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
         release = serializer.save()
