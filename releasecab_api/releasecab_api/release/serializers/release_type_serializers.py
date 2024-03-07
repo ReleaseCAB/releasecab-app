@@ -10,6 +10,12 @@ class ReleaseTypeSerializer(serializers.ModelSerializer):
         read_only_fields = [
             'pk', 'tenant', 'created_at']
 
+    def to_representation(self, instance):
+        representation = super().to_representation(instance)
+        if not instance.is_active:
+            representation['name'] += " (inactive)"
+        return representation
+
     def __init__(self, *args, **kwargs):
         kwargs['partial'] = True
         super(ReleaseTypeSerializer, self).__init__(*args, **kwargs)

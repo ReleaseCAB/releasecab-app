@@ -17,13 +17,19 @@ import {
   Th,
   Thead,
   Tr,
+  useToast,
 } from "@chakra-ui/react";
 import { AlertMessage } from "@components/AlertMessage";
+import { DeleteAlertDialog } from "@components/DeleteAlertDialog";
 import { Pagination } from "@components/paginiation";
-import { CreateReleaseStage, GetReleaseStages } from "@services/ReleaseApi";
+import {
+  CreateReleaseStage,
+  DeleteReleaseStage,
+  GetReleaseStages,
+} from "@services/ReleaseApi";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { FiEdit2, FiEye } from "react-icons/fi";
+import { FiEdit2, FiEye, FiTrash2 } from "react-icons/fi";
 import { IoArrowDown, IoArrowUp } from "react-icons/io5";
 
 // TODO: We don't allow delete from here. We need to figure out
@@ -38,7 +44,12 @@ export const ReleaseStageTable = () => {
   const [orderBy, setOrderBy] = useState("asc");
   const [update, setUpdate] = useState(true);
   const [newReleaseStage, setNewReleaseStage] = useState("");
+  const [stageToDelete, setStageToDelete] = useState();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
+  const toast = useToast();
+
+  const handleClose = () => setIsDialogOpen(false);
 
   const fetchReleaseStages = async () => {
     setLoading(true);
@@ -86,6 +97,37 @@ export const ReleaseStageTable = () => {
       setErrorMessage("");
     } else {
       setErrorMessage("Release stage already exists");
+    }
+  };
+
+  const deleteStage = async (e) => {
+    setIsDialogOpen(true);
+    setStageToDelete(e);
+  };
+
+  const onDeleteAction = async (action) => {
+    if (action === "delete") {
+      const deleteResult = await DeleteReleaseStage(stageToDelete);
+      if (deleteResult.ok) {
+        toast({
+          title: "Stage Deleted",
+          status: "success",
+          isClosable: true,
+          duration: 5000,
+        });
+      } else {
+        toast({
+          title:
+            "Unable To Delete Stage. This typically happens when there are releases in this stage.",
+          status: "error",
+          isClosable: true,
+          duration: 5000,
+        });
+      }
+      setUpdate(!update);
+      setStageToDelete();
+    } else {
+      setStageToDelete();
     }
   };
 
@@ -178,6 +220,12 @@ export const ReleaseStageTable = () => {
                         aria-label="Edit release stage"
                         onClick={() => editReleaseStage(releaseStage.id)}
                       />
+                      <IconButton
+                        icon={<FiTrash2 />}
+                        variant="tertiary"
+                        aria-label="Delete release stage"
+                        onClick={() => deleteStage(releaseStage.id)}
+                      />
                     </HStack>
                   </Td>
                 </Tr>
@@ -196,6 +244,12 @@ export const ReleaseStageTable = () => {
               />
             </Box>
           </Center>
+          <DeleteAlertDialog
+            isOpen={isDialogOpen}
+            onClose={handleClose}
+            title="Delete Stage"
+            onDelete={onDeleteAction}
+          />
         </>
       )}
       {releaseStages?.count === 0 && <Text>No release stages found</Text>}

@@ -54,6 +54,7 @@ export const urlConstants = {
   updateReleaseEnv: "api/releases/release-environments/update",
   deleteReleaseEnv: "api/releases/release-environments/delete",
   getReleaseStage: "api/releases/release-stages",
+  deleteReleaseStage: "api/releases/release-stages/delete",
   updateReleaseStage: "api/releases/release-stages/update",
   getReleaseStageConnections: "api/releases/release-stage-connections",
   updateReleaseStageConnection: "api/releases/release-stage-connections/update",

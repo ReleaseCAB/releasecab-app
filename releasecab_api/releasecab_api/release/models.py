@@ -45,6 +45,7 @@ class ReleaseComment(BaseReleaseCabModel):
 class ReleaseType(BaseReleaseCabModel):
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=1000, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
@@ -53,6 +54,7 @@ class ReleaseType(BaseReleaseCabModel):
 class ReleaseEnvironment(BaseReleaseCabModel):
     name = models.CharField(max_length=100)
     description = models.CharField(max_length=1000, blank=True, null=True)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
@@ -100,7 +102,8 @@ class ReleaseStageConnectionApprover(BaseReleaseCabModel):
 class ReleaseConfig(BaseReleaseCabModel):
     initial_stage = models.ForeignKey(
         ReleaseStage,
-        on_delete=models.CASCADE)
+        on_delete=models.SET_NULL,
+        null=True)
 
     def __str__(self):
         return f"Initial Stage: {self.initial_stage}"

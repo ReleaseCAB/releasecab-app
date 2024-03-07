@@ -43,10 +43,12 @@ export const EditBlackout = ({ blackout }) => {
       setError(null);
       if (response.ok) {
         const data = await response.json();
-        const mappedData = data.map(({ id, name }) => ({
-          value: id,
-          label: name,
-        }));
+        const mappedData = data
+          .filter((item) => item.is_active)
+          .map(({ id, name }) => ({
+            value: id,
+            label: name,
+          }));
         setEnvs(mappedData);
       } else {
         setError(

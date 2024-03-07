@@ -22,6 +22,7 @@ from .views.release_env_views import (AdminReleaseEnvironmentDetail,
 from .views.release_stage_views import (AdminStageDetail, AdminStageList,
                                         ReleaseStageByTenantId,
                                         ReleaseStageCreateView,
+                                        ReleaseStageDeleteAPIView,
                                         ReleaseStageRetrieve,
                                         ReleaseStageUpdateView)
 from .views.release_stats import ReleaseStatViewForUser
@@ -155,6 +156,10 @@ urlpatterns = [
     path('release-stages/update/<int:pk>/',
          ReleaseStageUpdateView.as_view(),
          name='release-stage-update'),
+    path(
+        'release-stages/delete/<int:pk>/',
+        ReleaseStageDeleteAPIView.as_view(),
+        name='release-stage-delete'),
     # Stage Connections
     path('release-stage-connections/',
          ReleaseStageConnectionsByTenantId.as_view(),

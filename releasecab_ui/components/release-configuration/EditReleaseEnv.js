@@ -5,6 +5,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Switch,
   VStack,
   useToast,
 } from "@chakra-ui/react";
@@ -16,6 +17,7 @@ import { useState } from "react";
 export const EditReleaseEnv = ({ releaseEnv }) => {
   const router = useRouter();
   const [error, setError] = useState("");
+  const [isActive, setIsActive] = useState(releaseEnv.is_active);
   const [releaseEnvName, setReleaseEnvName] = useState(releaseEnv.name);
   const [releaseEnvDescription, setReleaseEnvDescription] = useState(
     releaseEnv.description,
@@ -27,6 +29,7 @@ export const EditReleaseEnv = ({ releaseEnv }) => {
     setError("");
     const releaseEnvObj = {
       description: releaseEnvDescription,
+      is_active: isActive,
     };
     const newReleaseEnv = await UpdateReleaseEnv(releaseEnvObj, releaseEnv.id);
     if (newReleaseEnv.ok) {
@@ -62,6 +65,17 @@ export const EditReleaseEnv = ({ releaseEnv }) => {
               placeholder="Enter release environment description"
               value={releaseEnvDescription}
               onChange={(event) => setReleaseEnvDescription(event.target.value)}
+            />
+          </FormControl>
+          <FormControl display="flex" alignItems="center">
+            <FormLabel htmlFor="isActive" mb="0">
+              Is Active
+            </FormLabel>
+            <Switch
+              colorScheme="teal"
+              size="lg"
+              isChecked={isActive}
+              onChange={() => setIsActive(!isActive)}
             />
           </FormControl>
         </VStack>
