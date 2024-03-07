@@ -17,7 +17,7 @@ import {
   Tooltip,
   useToast,
 } from "@chakra-ui/react";
-import { Pagination } from "@components/paginiation";
+import { Pagination } from "@components/Pagination";
 import {
   AddNewReleaseComment,
   DeleteReleaseComment,
@@ -71,7 +71,7 @@ export const ViewRelease = ({ release }) => {
   const fetchNextStageConnections = async () => {
     const response = await FetchNextStageConnections(
       release.current_stage_id,
-      release.id,
+      release.id
     );
     if (response.ok) {
       const data = await response.json();
@@ -205,7 +205,7 @@ export const ViewRelease = ({ release }) => {
             )}
             {release.pending_approval &&
               nextStageConnectionsWithoutApprover.some(
-                (stage) => stage.name === release.next_stage_name,
+                (stage) => stage.name === release.next_stage_name
               ) && (
                 <Flex justifyContent="end" w="60%" mt={"2"}>
                   <Button

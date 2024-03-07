@@ -19,7 +19,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { Pagination } from "@components/paginiation";
+import { Pagination } from "@components/Pagination";
 import {
   FetchReleaseForTenant,
   GetReleaseEnvs,
@@ -64,7 +64,7 @@ export const ReleaseTable = () => {
       orderBy,
       filterMyReleases,
       releaseType,
-      environments,
+      environments
     );
     if (response.ok) {
       const data = await response.json();
@@ -82,7 +82,7 @@ export const ReleaseTable = () => {
       setEnvs(data);
     } else {
       setError(
-        "Unable to fetch release envs, please try again later or contact support.",
+        "Unable to fetch release envs, please try again later or contact support."
       );
     }
     setEnvLoading(false);
@@ -97,7 +97,7 @@ export const ReleaseTable = () => {
       setTypes(data);
     } else {
       setError(
-        "Unable to fetch release types, please try again later or contact support.",
+        "Unable to fetch release types, please try again later or contact support."
       );
     }
     setTypeLoading(false);

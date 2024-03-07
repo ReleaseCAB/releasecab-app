@@ -21,7 +21,7 @@ import {
 } from "@chakra-ui/react";
 import { AlertMessage } from "@components/AlertMessage";
 import { DeleteAlertDialog } from "@components/DeleteAlertDialog";
-import { Pagination } from "@components/paginiation";
+import { Pagination } from "@components/Pagination";
 import {
   CreateReleaseStage,
   DeleteReleaseStage,

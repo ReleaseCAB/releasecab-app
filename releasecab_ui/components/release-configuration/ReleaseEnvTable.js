@@ -19,7 +19,7 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { AlertMessage } from "@components/AlertMessage";
-import { Pagination } from "@components/paginiation";
+import { Pagination } from "@components/Pagination";
 import { AddNewReleaseEnv, GetReleaseEnvs } from "@services/ReleaseApi";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";

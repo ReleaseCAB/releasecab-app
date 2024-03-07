@@ -13,7 +13,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { Pagination } from "@components/paginiation";
+import { Pagination } from "@components/Pagination";
 import { FetchBlackoutForTenant } from "@services/BlackoutApi";
 import { ConvertTimeToLocale } from "@utils/TimeConverter";
 import { useRouter } from "next/router";

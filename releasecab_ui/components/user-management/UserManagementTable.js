@@ -13,7 +13,7 @@ import {
   Thead,
   Tr,
 } from "@chakra-ui/react";
-import { Pagination } from "@components/paginiation";
+import { Pagination } from "@components/Pagination";
 import { GetUsers } from "@services/UserApi";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";

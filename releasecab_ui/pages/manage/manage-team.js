@@ -14,8 +14,8 @@ import {
 } from "@chakra-ui/react";
 import { Header } from "@components/Header";
 import { Layout } from "@components/Layout";
+import { Pagination } from "@components/Pagination";
 import { AppShell } from "@components/app-shell/AppShell";
-import { Pagination } from "@components/paginiation";
 import { FetchUserManagedTeams } from "@services/TeamApi";
 import { WithAuthGuard } from "@utils/auth/AuthGuard";
 import { useRouter } from "next/router";

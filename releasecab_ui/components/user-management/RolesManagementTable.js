@@ -21,7 +21,7 @@ import {
 } from "@chakra-ui/react";
 import { AlertMessage } from "@components/AlertMessage";
 import { DeleteAlertDialog } from "@components/DeleteAlertDialog";
-import { Pagination } from "@components/paginiation";
+import { Pagination } from "@components/Pagination";
 import { CreateRole, DeleteRole, GetRoles } from "@services/RoleApi";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";

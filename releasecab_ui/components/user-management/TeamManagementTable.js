@@ -24,7 +24,7 @@ import {
 import { AlertMessage } from "@components/AlertMessage";
 import { DeleteAlertDialog } from "@components/DeleteAlertDialog";
 import { Dropzone } from "@components/Dropzone";
-import { Pagination } from "@components/paginiation";
+import { Pagination } from "@components/Pagination";
 import { CreateTeam, DeleteTeam, GetTeams } from "@services/TeamApi";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";

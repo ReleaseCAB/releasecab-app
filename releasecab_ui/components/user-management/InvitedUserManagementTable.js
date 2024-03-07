@@ -23,7 +23,7 @@ import {
 } from "@chakra-ui/react";
 import { AlertMessage } from "@components/AlertMessage";
 import { Dropzone } from "@components/Dropzone";
-import { Pagination } from "@components/paginiation";
+import { Pagination } from "@components/Pagination";
 import {
   CreateInvitedUser,
   DeleteInvitedUser,
