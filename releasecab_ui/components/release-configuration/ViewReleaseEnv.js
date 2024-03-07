@@ -11,6 +11,12 @@ export const ViewReleaseEnv = ({ releaseEnv }) => {
         <GridItem>
           <Text>{releaseEnv.description || "N/A"}</Text>
         </GridItem>
+        <GridItem>
+          <Text fontWeight="bold">Is Active:</Text>
+        </GridItem>
+        <GridItem>
+          <Text>{releaseEnv.is_active ? "true" : "false"}</Text>
+        </GridItem>
       </Grid>
     </Box>
   );

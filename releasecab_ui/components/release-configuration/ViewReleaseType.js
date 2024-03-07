@@ -11,6 +11,12 @@ export const ViewReleaseType = ({ releaseType }) => {
         <GridItem>
           <Text>{releaseType.description || "N/A"}</Text>
         </GridItem>
+        <GridItem>
+          <Text fontWeight="bold">Is Active:</Text>
+        </GridItem>
+        <GridItem>
+          <Text>{releaseType.is_active ? "true" : "false"}</Text>
+        </GridItem>
       </Grid>
     </Box>
   );

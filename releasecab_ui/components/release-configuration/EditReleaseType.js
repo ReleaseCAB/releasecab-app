@@ -5,6 +5,7 @@ import {
   FormControl,
   FormLabel,
   Input,
+  Switch,
   VStack,
   useToast,
 } from "@chakra-ui/react";
@@ -17,6 +18,7 @@ export const EditReleaseType = ({ releaseType }) => {
   const router = useRouter();
   const [error, setError] = useState("");
   const [releaseTypeName, setReleaseTypeName] = useState(releaseType.name);
+  const [isActive, setIsActive] = useState(releaseType.is_active);
   const [releaseTypeDescription, setReleaseTypeDescription] = useState(
     releaseType.description,
   );
@@ -27,6 +29,7 @@ export const EditReleaseType = ({ releaseType }) => {
     setError("");
     const releaseTypeObj = {
       description: releaseTypeDescription,
+      is_active: isActive,
     };
     const newReleaseType = await UpdateReleaseType(
       releaseTypeObj,
@@ -67,6 +70,17 @@ export const EditReleaseType = ({ releaseType }) => {
               onChange={(event) =>
                 setReleaseTypeDescription(event.target.value)
               }
+            />
+          </FormControl>
+          <FormControl display="flex" alignItems="center">
+            <FormLabel htmlFor="isActive" mb="0">
+              Is Active
+            </FormLabel>
+            <Switch
+              colorScheme="teal"
+              size="lg"
+              isChecked={isActive}
+              onChange={() => setIsActive(!isActive)}
             />
           </FormControl>
         </VStack>
