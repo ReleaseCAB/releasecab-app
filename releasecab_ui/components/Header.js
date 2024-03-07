@@ -27,7 +27,7 @@ export const Header = (props) => {
 
   const handleSearch = async (e) => {
     setSearchText(e);
-    if (searchText && searchText.length > 1 && !loading) {
+    if (e && e.length > 2 && !loading) {
       setLoading(true);
       const response = await GetReleaseSearch(e);
       if (response.ok) {
@@ -41,6 +41,9 @@ export const Header = (props) => {
   };
 
   const routeToResult = (result) => {
+    if (result == "No Releases Found") {
+      return;
+    }
     const identifier = result.split(" - ")[0];
     router.push("/release/" + identifier);
   };
@@ -64,22 +67,32 @@ export const Header = (props) => {
           </Stack>
           {showSearchBox === "true" && (
             <Flex align="center">
-              <Input
-                placeholder="Search Releases"
-                variant="outline"
-                size="sm"
-                maxWidth="md"
-                mr={2}
-                borderColor="gray.300"
-                borderRadius="md"
-                onChange={(e) => handleSearch(e.target.value)}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter") {
-                    handleSearch();
-                  }
-                }}
-              />
-              {loading && <Spinner />}
+              <Flex align="center" position="relative">
+                <Input
+                  placeholder="Search Releases"
+                  variant="outline"
+                  size="sm"
+                  maxWidth="md"
+                  mr={2}
+                  borderColor="gray.300"
+                  borderRadius="md"
+                  onChange={(e) => handleSearch(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === "Enter") {
+                      handleSearch();
+                    }
+                  }}
+                />
+                {loading && (
+                  <Spinner
+                    size="sm"
+                    color="gray.500"
+                    position="absolute"
+                    right="8px"
+                    transform="translateY(-50%)"
+                  />
+                )}
+              </Flex>
               <Menu isOpen={searchResults.length > 0}>
                 <MenuButton></MenuButton>
                 <MenuList>
