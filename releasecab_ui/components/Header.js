@@ -27,17 +27,17 @@ export const Header = (props) => {
 
   const handleSearch = async (e) => {
     setSearchText(e);
-    if (searchText && searchText.length > 1) {
-      const response = await GetReleaseSearch(searchText);
+    if (searchText && searchText.length > 1 && !loading) {
+      setLoading(true);
+      const response = await GetReleaseSearch(e);
       if (response.ok) {
-        setLoading(true);
         const data = await response.json();
         setSearchResults(data);
-        setLoading(false);
       }
     } else {
       setSearchResults([]);
     }
+    setLoading(false);
   };
 
   const routeToResult = (result) => {
@@ -65,7 +65,7 @@ export const Header = (props) => {
           {showSearchBox === "true" && (
             <Flex align="center">
               <Input
-                placeholder="Search"
+                placeholder="Search Releases"
                 variant="outline"
                 size="sm"
                 maxWidth="md"
