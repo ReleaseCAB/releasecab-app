@@ -14,6 +14,9 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='releaseconfig',
             name='initial_stage',
-            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='release.releasestage'),
+            field=models.ForeignKey(
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                to='release.releasestage'),
         ),
     ]

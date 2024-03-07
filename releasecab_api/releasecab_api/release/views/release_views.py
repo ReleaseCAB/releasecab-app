@@ -241,5 +241,8 @@ class ReleaseSearchView(ListAPIView):
             f"{release.identifier} - {release.name}"
             for release in queryset
         ]
-
+        if not release_list:
+            release_list = [
+                'No Releases Found'
+            ]
         return Response(release_list)
