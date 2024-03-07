@@ -102,7 +102,8 @@ class ReleaseStageConnectionApprover(BaseReleaseCabModel):
 class ReleaseConfig(BaseReleaseCabModel):
     initial_stage = models.ForeignKey(
         ReleaseStage,
-        on_delete=models.CASCADE)
+        on_delete=models.SET_NULL,
+        null=True)
 
     def __str__(self):
         return f"Initial Stage: {self.initial_stage}"

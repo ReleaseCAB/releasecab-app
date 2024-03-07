@@ -419,6 +419,21 @@ export const DeleteReleaseComment = async (releaseCommentId) => {
   return response;
 };
 
+export const DeleteReleaseStage = async (releaseStageId) => {
+  await ApiAuth();
+  const response = await fetch(
+    urlConstants.deleteReleaseStage + "/" + releaseStageId,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.access_token}`,
+      },
+    },
+  );
+  return response;
+};
+
 export const DeleteReleaseStageConnection = async (
   releaseStageConnectionId,
 ) => {

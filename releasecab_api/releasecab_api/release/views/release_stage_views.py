@@ -1,7 +1,8 @@
 from rest_framework import status
 from rest_framework.authentication import SessionAuthentication
-from rest_framework.generics import (ListAPIView, RetrieveAPIView,
-                                     UpdateAPIView, get_object_or_404)
+from rest_framework.generics import (DestroyAPIView, ListAPIView,
+                                     RetrieveAPIView, UpdateAPIView,
+                                     get_object_or_404)
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -171,3 +172,34 @@ class ReleaseStageCreateView(APIView):
                     status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ReleaseStageDeleteAPIView(DestroyAPIView):
+    '''
+    DELETE a release stage, requires tenant owner permissions
+    '''
+    authentication_classes = [JWTAuthentication, SessionAuthentication]
+    permission_classes = [IsAuthenticated, IsTenantOwnerPermission]
+
+    def get_queryset(self):
+        return ReleaseStage.objects.all()
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        lookup_field = self.kwargs.get('pk')
+        obj = get_object_or_404(
+            queryset,
+            id=lookup_field,
+            tenant=self.request.user.tenant)
+        self.check_object_permissions(self.request, obj)
+        return obj
+
+    def perform_destroy(self, instance):
+        message_title = f"Release Stage '{instance.name} Was Deleted"
+        message_body = f"Release stage '{instance.name}' was deleted"
+        CommunicationHelpers.create_new_message(
+            self.request.user,
+            message_title,
+            message_body,
+            False)
+        super(ReleaseStageDeleteAPIView, self).perform_destroy(instance)
