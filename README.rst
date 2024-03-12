@@ -126,12 +126,6 @@ License
 
 Release CAB is released under GPL-3.0 license.
 
-Commercial Support
--------
-
-Commercial support is available. We can help you set up the app, provide ongoing support, add features needed for your
-specific use case, and host the app for you! Reach out to us at hello@releasecab.com to get in touch!
-
 Support The Project
 -------------------
 
