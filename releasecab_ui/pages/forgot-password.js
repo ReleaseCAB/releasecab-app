@@ -28,6 +28,8 @@ const ForgotPasswordPage = () => {
   const [errorMessage, setAlertMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submittedTitle, setSubmittedTitle] = useState("");
+  const [submittedBody, setSubmittedBody] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const isLoginFormValid = email.trim() !== "";
@@ -43,6 +45,13 @@ const ForgotPasswordPage = () => {
     setAlertMessage("");
     setIsLoading(true);
     await PasswordResetRequest(email);
+    // Intentionally not handle error.
+    // Right now, it would leak more information if we said there
+    // is not an account associated with that email
+    setSubmittedTitle("Password Reset Request Received!");
+    setSubmittedBody(
+      "If a matching email address is found in our system, an email will be sent with a reset link."
+    );
     setSubmitted(true);
     setIsLoading(false);
   };
@@ -58,7 +67,22 @@ const ForgotPasswordPage = () => {
       return;
     }
     setAlertMessage();
-    await PasswordResetRequestConfirm(token, password);
+    const passwordResetResponse = await PasswordResetRequestConfirm(
+      token,
+      password
+    );
+    if (passwordResetResponse.ok) {
+      setSubmittedTitle("Password Reset Successful!");
+      setSubmittedBody("");
+      setSubmitted(true);
+    } else {
+      const passwordResetResponseJson = await passwordResetResponse.json();
+      if (passwordResetResponseJson.password) {
+        setAlertMessage(passwordResetResponseJson.password.join(". "));
+      } else {
+        setAlertMessage("Password reset token not found");
+      }
+    }
   };
 
   return (
@@ -115,20 +139,15 @@ const ForgotPasswordPage = () => {
                 </Stack>
               </form>
             )}
-            {submitted && !token && (
+            {submitted && (
               <>
                 <Center>
-                  <Text fontWeight="bold">
-                    Password Reset Request Received!
-                  </Text>
+                  <Text fontWeight="bold">{submittedTitle}</Text>
                 </Center>
-                <Text>
-                  If a matching email address is found in our system, an email
-                  will be sent with a reset link.
-                </Text>
+                <Text>{submittedBody}</Text>
               </>
             )}
-            {token && (
+            {!submitted && token && (
               <form onSubmit={handleNewPasswordSubmit}>
                 <Stack spacing="6">
                   <Stack spacing="5">
@@ -166,7 +185,7 @@ const ForgotPasswordPage = () => {
                       color="brand.white_text"
                       bg="brand.button_enabled"
                     >
-                      Send Password Reset Link
+                      Reset Password
                     </Button>
                   </Stack>
                 </Stack>
