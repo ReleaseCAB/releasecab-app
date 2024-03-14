@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
+    'django_rest_passwordreset',
     # Internal Apps
     'releasecab_api',
     'releasecab_api.tenant',
@@ -129,3 +130,6 @@ FROM_EMAIL = os.environ.get("FROM_EMAIL", default='localhost@localhost')
 
 RELEASECAB_ONLY_ONE_TENANT = int(os.environ.get(
     "RELEASECAB_ONLY_ONE_TENANT", default=1))
+
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

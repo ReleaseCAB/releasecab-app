@@ -13,7 +13,7 @@ export const LoginUser = async (email, password) => {
   return response;
 };
 
-// No Auth Needed, that is what we are doing
+// No Auth Needed
 export const VerifyToken = async () => {
   const response = await fetch(urlConstants.tokenVerify, {
     method: "POST",
@@ -25,7 +25,31 @@ export const VerifyToken = async () => {
   return response;
 };
 
-// No Auth Needed, that is what we are doing
+// No Auth Needed
+export const PasswordResetRequest = async (email) => {
+  const response = await fetch(urlConstants.forgotPassword, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email: email }),
+  });
+  return response;
+};
+
+// No Auth Needed
+export const PasswordResetRequestConfirm = async (token, password) => {
+  const response = await fetch(urlConstants.forgotPassword + "/confirm", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ token: token, password: password }),
+  });
+  return response;
+};
+
+// No Auth Needed
 export const ValidateUser = async (email, password) => {
   const response = await fetch(urlConstants.userValidate, {
     method: "POST",
@@ -37,7 +61,7 @@ export const ValidateUser = async (email, password) => {
   return response;
 };
 
-// No Auth Needed, that is what we are doing
+// No Auth Needed
 export const RefreshToken = async () => {
   const response = await fetch(urlConstants.tokenRefresh, {
     method: "POST",

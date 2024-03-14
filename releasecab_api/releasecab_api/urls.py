@@ -28,6 +28,8 @@ urlpatterns = [
         name='token_refresh'),
     path('api/token-verify/',
          TokenVerifyView.as_view(), name='token_verify'),
+    path('api/password_reset/', include('django_rest_passwordreset.urls',
+                                        namespace='password_reset')),
 
     # App Endpoints
     path('api/users/', include('releasecab_api.user.urls'), name='api-users'),
