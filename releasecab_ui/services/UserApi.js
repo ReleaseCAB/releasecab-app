@@ -165,7 +165,7 @@ export const CreateUser = async (
   lastName,
   isOwner,
   onboardingNotNeeded,
-  tenantId
+  tenantId,
 ) => {
   const bodyWithTenant = {
     email: email,
@@ -221,7 +221,7 @@ export const GetUsers = async (page, sortBy, orderBy) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${localStorage.access_token}`,
       },
-    }
+    },
   );
   return response;
 };

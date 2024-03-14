@@ -50,7 +50,7 @@ const ForgotPasswordPage = () => {
     // is not an account associated with that email
     setSubmittedTitle("Password Reset Request Received!");
     setSubmittedBody(
-      "If a matching email address is found in our system, an email will be sent with a reset link."
+      "If a matching email address is found in our system, an email will be sent with a reset link.",
     );
     setSubmitted(true);
     setIsLoading(false);
@@ -69,7 +69,7 @@ const ForgotPasswordPage = () => {
     setAlertMessage();
     const passwordResetResponse = await PasswordResetRequestConfirm(
       token,
-      password
+      password,
     );
     if (passwordResetResponse.ok) {
       setSubmittedTitle("Password Reset Successful!");

@@ -60,7 +60,7 @@ const LoginPage = () => {
         router.push(nextUrl);
       } else if (response.status === 401) {
         setAlertMessage(
-          "Invalid email or password, or account is not active yet."
+          "Invalid email or password, or account is not active yet.",
         );
       } else {
         const errorData = await response.json();
