@@ -4,6 +4,7 @@ export const urlConstants = {
   tokenVerify: "api/token-verify",
   tokenBlacklist: "api/token-blacklist",
   tokenRefresh: "api/token-refresh",
+  forgotPassword: "api/password_reset",
   userProfile: "api/users/me",
   userCreate: "api/users/create",
   userUpdate: "api/users/update",

@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Center,
   Container,
   FormControl,
   FormLabel,
@@ -59,7 +60,7 @@ const LoginPage = () => {
         router.push(nextUrl);
       } else if (response.status === 401) {
         setAlertMessage(
-          "Invalid email or password, or account is not active yet.",
+          "Invalid email or password, or account is not active yet."
         );
       } else {
         const errorData = await response.json();
@@ -126,24 +127,30 @@ const LoginPage = () => {
                     showheader="true"
                   />
                 </Stack>
-                {/* TODO: Add remember me/Forgot Password functionality */}
+                {/* TODO: Remember me functionality */}
                 {/* <HStack justify="space-between">
                   <Checkbox defaultChecked>Remember me</Checkbox>
-                  <Button variant="text" size="sm">
-                    Forgot password?
-                  </Button>
                 </HStack> */}
                 <Stack spacing="6">
                   <Button
                     type="submit"
                     width="100%"
-                    isLoading={isLoading}
                     loadingText="Submitting"
                     color="brand.white_text"
                     bg="brand.button_enabled"
                   >
                     Sign In
                   </Button>
+                  <Center>
+                    <Link
+                      variant="text"
+                      size="lg"
+                      color="brand.link_blue"
+                      href="/forgot-password"
+                    >
+                      Forgot Password?
+                    </Link>
+                  </Center>
                 </Stack>
               </Stack>
             </form>
