@@ -57,7 +57,9 @@ class BlackoutCreate(CreateAPIView):
         validated_data['owner'] = owner
         blackout_instance = serializer.save()
         message_title = f"Blackout '{blackout_instance.name}' Was Created"
-        message_body = f"Blackout '{blackout_instance.name}' was created"
+        message_body = f"Blackout '{blackout_instance.name}' was created by \
+            {blackout_instance.owner.first_name} \
+            {blackout_instance.owner.last_name}."
         CommunicationHelpers.create_new_message(
             self.request.user,
             message_title,
@@ -90,8 +92,8 @@ class BlackoutRetrieve(RetrieveAPIView):
 
 class BlackoutUpdateView(UpdateAPIView):
     """
-    PATCH a blackout. User must have CanCreateBlackout permission and
-    be the owner of the blackout
+    PATCH a blackout. User must have CanCreateBlackout permission
+    and be the owner of the blackout
     """
     serializer_class = BlackoutSerializer
     permission_classes = [IsAuthenticated, CanCreateBlackoutsPermission]
@@ -118,7 +120,9 @@ class BlackoutUpdateView(UpdateAPIView):
             serializer.is_valid(raise_exception=True)
             blackout_instance = serializer.save()
             message_title = f"Blackout '{blackout_instance.name}' Was Updated"
-            message_body = f"Blackout '{blackout_instance.name}' was updated"
+            message_body = f"Blackout '{blackout_instance.name}' was updated by \
+                {blackout_instance.owner.first_name} \
+                {blackout_instance.owner.last_name}."
             CommunicationHelpers.create_new_message(
                 self.request.user,
                 message_title,
@@ -231,7 +235,8 @@ class BlackoutDeleteAPIView(DestroyAPIView):
                     {"detail": "Cannot delete an expired blackout."},
                     status=status.HTTP_403_FORBIDDEN)
             message_title = f"Blackout '{instance.name}' Was Deleted"
-            message_body = f"Blackout '{instance.name}' was deleted"
+            message_body = f"Blackout '{instance.name}' was deleted by \
+                {instance.owner.first_name} {instance.owner.last_name}."
             CommunicationHelpers.create_new_message(
                 request.user,
                 message_title,
