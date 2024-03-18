@@ -96,7 +96,7 @@ class ReleaseEnvUpdateView(UpdateAPIView):
             message_body = f"Release environment '{release_env.name}'\
                   was updated"
             CommunicationHelpers.create_new_message(
-                self.request.user,
+                [self.request.user],
                 message_title,
                 message_body,
                 False)
@@ -166,7 +166,7 @@ class ReleaseEnvCreateView(APIView):
                 message_body = f"Release environment '{release_env.name}'\
                       was created"
                 CommunicationHelpers.create_new_message(
-                    self.request.user,
+                    [self.request.user],
                     message_title,
                     message_body,
                     False)
@@ -191,7 +191,7 @@ class ReleaseEnvDeleteAPIView(DestroyAPIView):
         message_title = f"Release Environment '{instance.name}' Was Deleted"
         message_body = f"Release Environment '{instance.name}' was deleted"
         CommunicationHelpers.create_new_message(
-            self.request.user,
+            [self.request.user],
             message_title,
             message_body,
             False)

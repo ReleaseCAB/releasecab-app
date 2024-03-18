@@ -93,7 +93,7 @@ class ReleaseStageUpdateView(UpdateAPIView):
             message_title = f"Release Stage '{release_stage.name}' Was Updated"
             message_body = f"Release stage '{release_stage.name}' was updated"
             CommunicationHelpers.create_new_message(
-                self.request.user,
+                [self.request.user],
                 message_title,
                 message_body,
                 False)
@@ -163,7 +163,7 @@ class ReleaseStageCreateView(APIView):
                 message_body = f"Release stage '{release_stage.name}'\
                 was created"
                 CommunicationHelpers.create_new_message(
-                    self.request.user,
+                    [self.request.user],
                     message_title,
                     message_body,
                     False)
@@ -198,7 +198,7 @@ class ReleaseStageDeleteAPIView(DestroyAPIView):
         message_title = f"Release Stage '{instance.name} Was Deleted"
         message_body = f"Release stage '{instance.name}' was deleted"
         CommunicationHelpers.create_new_message(
-            self.request.user,
+            [self.request.user],
             message_title,
             message_body,
             False)

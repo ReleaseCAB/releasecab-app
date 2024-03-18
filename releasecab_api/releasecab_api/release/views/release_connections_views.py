@@ -95,7 +95,7 @@ class ReleaseStageConnectionUpdateView(UpdateAPIView):
             message_body = f"Release connection from '{release_connection.from_stage}'\
             to '{release_connection.to_stage}' was updated"
             CommunicationHelpers.create_new_message(
-                self.request.user,
+                [self.request.user],
                 message_title,
                 message_body,
                 False)
@@ -238,7 +238,7 @@ class ReleaseConnectionDeleteAPIView(DestroyAPIView):
         message_body = f"Release connection from '{instance.from_stage}'\
             to '{instance.to_stage}' was deleted"
         CommunicationHelpers.create_new_message(
-            self.request.user,
+            [self.request.user],
             message_title,
             message_body,
             False)
@@ -262,7 +262,7 @@ class ReleaseConnectionCreate(CreateAPIView):
         message_body = f"Release connection from '{connection.from_stage}'\
             to '{connection.to_stage}' was created"
         CommunicationHelpers.create_new_message(
-            self.request.user,
+            [self.request.user],
             message_title,
             message_body,
             False)

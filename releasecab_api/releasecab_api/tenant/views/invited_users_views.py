@@ -105,7 +105,7 @@ class InvitedUserCreateView(APIView):
                       Added"
                 message_body = f"Release '{invited_user.email}' was added"
                 CommunicationHelpers.create_new_message(
-                    self.request.user,
+                    [self.request.user],
                     message_title,
                     message_body,
                     False)
@@ -130,7 +130,7 @@ class InvitedUserDeleteAPIView(DestroyAPIView):
         message_title = f"Invited User '{instance.email}' Was Deleted"
         message_body = f"Invited User '{instance.email}' was deleted"
         CommunicationHelpers.create_new_message(
-            self.request.user,
+            [self.request.user],
             message_title,
             message_body,
             False)

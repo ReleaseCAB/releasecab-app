@@ -61,7 +61,7 @@ class BlackoutCreate(CreateAPIView):
             {blackout_instance.owner.first_name} \
             {blackout_instance.owner.last_name}."
         CommunicationHelpers.create_new_message(
-            self.request.user,
+            [self.request.user],
             message_title,
             message_body,
             False)
@@ -124,7 +124,7 @@ class BlackoutUpdateView(UpdateAPIView):
                 {blackout_instance.owner.first_name} \
                 {blackout_instance.owner.last_name}."
             CommunicationHelpers.create_new_message(
-                self.request.user,
+                [self.request.user],
                 message_title,
                 message_body,
                 False)
@@ -238,7 +238,7 @@ class BlackoutDeleteAPIView(DestroyAPIView):
             message_body = f"Blackout '{instance.name}' was deleted by \
                 {instance.owner.first_name} {instance.owner.last_name}."
             CommunicationHelpers.create_new_message(
-                request.user,
+                [request.user],
                 message_title,
                 message_body,
                 False)

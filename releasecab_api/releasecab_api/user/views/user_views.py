@@ -94,7 +94,7 @@ class UserUpdate(APIView):
         if user_serializer.is_valid():
             user_serializer.save()
             CommunicationHelpers.create_new_message(
-                self.request.user,
+                [self.request.user],
                 'You Have Updated Your Profile',
                 "Your profile was updated",
                 False)
@@ -134,7 +134,7 @@ class UpdateUserView(UpdateAPIView):
             message_title = f"User '{user.email}' Was Updated"
             message_body = f"User '{user.email}' was updated"
             CommunicationHelpers.create_new_message(
-                self.request.user,
+                [self.request.user],
                 message_title,
                 message_body,
                 False)
