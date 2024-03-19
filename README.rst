@@ -1,7 +1,7 @@
-Release CAB - Software Release Management Software
-===================================================
+Release CAB -  Open Source Release Management Software
+======================================================
 
-Release CAB is a software release management and change approval board 
+Release CAB is a software release management and change advisory board (CAB)
 software aimed towards simplifying and creating an auditable software release process.
 
 Features Include:
