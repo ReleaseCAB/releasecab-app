@@ -98,7 +98,7 @@ class RoleUpdateView(UpdateAPIView):
             message_title = f"Role '{role.name}' Was Updated"
             message_body = f"Role '{role.name}' was updated"
             CommunicationHelpers.create_new_message(
-                self.request.user,
+                [self.request.user],
                 message_title,
                 message_body,
                 False)
@@ -122,7 +122,7 @@ class RoleDeleteAPIView(DestroyAPIView):
         message_title = f"Role '{instance.name}' Was Deleted"
         message_body = f"Role '{instance.name}' was deleted"
         CommunicationHelpers.create_new_message(
-            self.request.user,
+            [self.request.user],
             message_title,
             message_body,
             False)
@@ -155,7 +155,7 @@ class RoleCreateView(APIView):
                 message_title = f"Role '{role.name}' Was Created"
                 message_body = f"Role '{role.name}' was created"
                 CommunicationHelpers.create_new_message(
-                    self.request.user,
+                    [self.request.user],
                     message_title,
                     message_body,
                     False)

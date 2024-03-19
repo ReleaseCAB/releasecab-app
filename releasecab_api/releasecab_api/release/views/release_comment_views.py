@@ -82,7 +82,7 @@ class ReleaseCommentCreate(CreateAPIView):
         message_body = f"Comment was added on release '{release.name}'.\
             Comment: '{comment.comment_body}'"
         CommunicationHelpers.create_new_message(
-            self.request.user,
+            [self.request.user, release.owner],
             message_title,
             message_body,
             False)
@@ -116,7 +116,7 @@ class CommentDeleteAPIView(DestroyAPIView):
             message_title = f"Comment '{instance.pk}' Was Deleted"
             message_body = f"Comment '{instance.pk}' was deleted"
             CommunicationHelpers.create_new_message(
-                request.user,
+                [request.user],
                 message_title,
                 message_body,
                 False)

@@ -96,7 +96,7 @@ class ReleaseTypeCreateView(APIView):
                 message_body = f"Release type '{release_type.name}'\
                       was created"
                 CommunicationHelpers.create_new_message(
-                    self.request.user,
+                    [self.request.user],
                     message_title,
                     message_body,
                     False)
@@ -158,11 +158,11 @@ class ReleaseTypeUpdateView(UpdateAPIView):
         if request.user.is_tenant_owner:
             serializer = self.get_serializer(instance, data=request.data)
             serializer.is_valid(raise_exception=True)
-            release_stage = serializer.save()
-            message_title = f"Release Stage '{release_stage.name}' Was Updated"
-            message_body = f"Release stage '{release_stage.name}' was updated"
+            release_type = serializer.save()
+            message_title = f"Release Type '{release_type.name}' Was Updated"
+            message_body = f"Release type '{release_type.name}' was updated"
             CommunicationHelpers.create_new_message(
-                self.request.user,
+                [self.request.user],
                 message_title,
                 message_body,
                 False)
@@ -189,7 +189,7 @@ class ReleaseTypeDeleteAPIView(DestroyAPIView):
         message_title = f"Release Type '{instance.name}' Was Deleted"
         message_body = f"Release Type '{instance.name}' was deleted"
         CommunicationHelpers.create_new_message(
-            self.request.user,
+            [self.request.user],
             message_title,
             message_body,
             False)

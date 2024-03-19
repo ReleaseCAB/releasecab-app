@@ -96,7 +96,7 @@ class TeamCreateView(APIView):
                 message_title = f"Team '{team.name}' Was Created"
                 message_body = f"Team '{team.name}' was created"
                 CommunicationHelpers.create_new_message(
-                    self.request.user,
+                    [self.request.user],
                     message_title,
                     message_body,
                     False)
@@ -121,7 +121,7 @@ class TeamDeleteAPIView(DestroyAPIView):
         message_title = f"Team '{instance.name}' Was Deleted"
         message_body = f"Team '{instance.name}' was deleted"
         CommunicationHelpers.create_new_message(
-            self.request.user,
+            [self.request.user],
             message_title,
             message_body,
             False)
@@ -182,7 +182,7 @@ class TeamUpdateView(UpdateAPIView):
         message_title = f"Team '{team.name}' Was Updated"
         message_body = f"Team '{team.name}' was updated"
         CommunicationHelpers.create_new_message(
-            self.request.user,
+            [self.request.user],
             message_title,
             message_body,
             False)
