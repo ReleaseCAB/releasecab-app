@@ -101,9 +101,9 @@ class InvitedUserCreateView(APIView):
                                 status=status.HTTP_400_BAD_REQUEST)
             else:
                 invited_user = serializer.save(tenant=tenant)
-                message_title = f"Invited User '{invited_user.email}' Was\
-                      Added"
-                message_body = f"Release '{invited_user.email}' was added"
+                message_title = f"Email '{invited_user.email}' Was\
+                      Invited"
+                message_body = f"Email '{invited_user.email}' was Invited"
                 CommunicationHelpers.create_new_message(
                     [self.request.user],
                     message_title,
@@ -127,8 +127,8 @@ class InvitedUserDeleteAPIView(DestroyAPIView):
     serializer_class = InvitedUserSerializer
 
     def perform_destroy(self, instance):
-        message_title = f"Invited User '{instance.email}' Was Deleted"
-        message_body = f"Invited User '{instance.email}' was deleted"
+        message_title = f"User {instance.email}'s Invitation Was Deleted"
+        message_body = f"User {instance.email}'s invitation was deleted"
         CommunicationHelpers.create_new_message(
             [self.request.user],
             message_title,

@@ -158,9 +158,9 @@ class ReleaseTypeUpdateView(UpdateAPIView):
         if request.user.is_tenant_owner:
             serializer = self.get_serializer(instance, data=request.data)
             serializer.is_valid(raise_exception=True)
-            release_stage = serializer.save()
-            message_title = f"Release Stage '{release_stage.name}' Was Updated"
-            message_body = f"Release stage '{release_stage.name}' was updated"
+            release_type = serializer.save()
+            message_title = f"Release Type '{release_type.name}' Was Updated"
+            message_body = f"Release type '{release_type.name}' was updated"
             CommunicationHelpers.create_new_message(
                 [self.request.user],
                 message_title,

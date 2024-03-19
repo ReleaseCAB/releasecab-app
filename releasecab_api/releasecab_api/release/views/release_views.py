@@ -166,7 +166,7 @@ class ReleaseUpdateView(UpdateAPIView):
         message_title = f"Release '{release.name}' Was Updated"
         message_body = f"Release '{release.name}' was updated"
         CommunicationHelpers.create_new_message(
-            [self.request.user],
+            [self.request.user, instance.owner],
             message_title,
             message_body,
             False)
@@ -210,7 +210,7 @@ class ReleaseDeleteAPIView(DestroyAPIView):
         message_title = f"Release '{instance.name}' Was Deleted"
         message_body = f"Release '{instance.name}' was deleted"
         CommunicationHelpers.create_new_message(
-            [request.user],
+            [request.user, instance.owner],
             message_title,
             message_body,
             False)
