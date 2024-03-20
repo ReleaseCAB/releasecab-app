@@ -7,15 +7,17 @@ from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import AccessToken
 
 from releasecab_api.tenant.models import Tenant
-from releasecab_api.user.models import User
+from releasecab_api.user.models import Role, Team, User
 
 from ..models import (Release, ReleaseComment, ReleaseConfig, ReleaseStage,
-                      ReleaseType, ReleaseStageConnection)
+                      ReleaseStageConnection, ReleaseStageConnectionApprover,
+                      ReleaseType)
 
 
 def create_access_token(user):
     token = AccessToken.for_user(user)
     return str(token)
+
 
 class ReleaseViewsTest(TestCase):
     def setUp(self):
@@ -224,7 +226,8 @@ class TestStageConnectionViews(TestCase):
             tenant=self.tenant,
         )
         self.client.credentials(
-            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.admin_user)}')
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.admin_user)}')
 
     def test_admin_can_retrieve_stage_connections_list(self):
         url = reverse('admin-release-stage-connections-list')
@@ -233,7 +236,10 @@ class TestStageConnectionViews(TestCase):
         self.assertGreaterEqual(len(response.data), 1)
 
     def test_admin_not_found_stage_connection_detail(self):
-        url = reverse('admin-release-stage-connections-detail', kwargs={'pk': '2'})
+        url = reverse(
+            'admin-release-stage-connections-detail',
+            kwargs={
+                'pk': '2'})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -242,14 +248,115 @@ class TestStageConnectionViews(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    # def test_user_cannot_update_stage_connection(self):
-    #     stage_connection = ReleaseStageConnection.objects.first()
-    #     url = reverse('stage-connection-update', kwargs={'pk': stage_connection.pk})
-    #     response = self.client.patch(url, data={}, format='json')
-    #     self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+    def test_user_can_retrieve_release_stage_connections(self):
+        release_stage_id = self.in_progress_stage.pk
+        url = reverse('release-stage-connection-get-to-stages',
+                      kwargs={'release_stage_id': release_stage_id})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    # def test_user_can_retrieve_release_stage_connections(self):
-    #     release_stage_id = 1  # Replace with a valid release stage id
-    #     url = reverse('release-stage-connections', kwargs={'release_stage_id': release_stage_id})
-    #     response = self.client.get(url)
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
+    def test_admin_can_update_stage_connection(self):
+        new_to_stage = ReleaseStage.objects.create(
+            name='New Stage',
+            description='New Stage',
+            allow_release_delete=False,
+            allow_release_update=False,
+            tenant=self.tenant
+        )
+        payload = {
+            'to_stage': new_to_stage.pk
+        }
+        url = reverse('release-stage-connection-update',
+                      kwargs={'pk': self.connection.pk})
+        response = self.client.put(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['to_stage'], new_to_stage.pk)
+
+    def test_admin_can_delete_stage_connection(self):
+        url = reverse('release-stage-connection-delete',
+                      kwargs={'pk': self.connection.pk})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(
+            ReleaseStageConnection.objects.filter(
+                pk=self.connection.pk).exists())
+
+    def test_user_can_update_stage_connection(self):
+        new_to_stage = ReleaseStage.objects.create(
+            name='New Stage',
+            description='New Stage',
+            allow_release_delete=False,
+            allow_release_update=False,
+            tenant=self.tenant
+        )
+        payload = {
+            'to_stage': new_to_stage.pk
+        }
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.normal_user)}')
+        url = reverse('release-stage-connection-update',
+                      kwargs={'pk': self.connection.pk})
+        response = self.client.put(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_user_can_delete_stage_connection(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.normal_user)}')
+        url = reverse('release-stage-connection-delete',
+                      kwargs={'pk': self.connection.pk})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_admin_can_create_stage_connection(self):
+        new_to_stage = ReleaseStage.objects.create(
+            name='New Stage',
+            description='New Stage',
+            allow_release_delete=False,
+            allow_release_update=False,
+            tenant=self.tenant
+        )
+        payload = {
+            'from_stage': self.planning_stage.pk,
+            'to_stage': new_to_stage.pk,
+            'tenant': self.tenant.pk,
+            'owner_only': False
+        }
+        url = reverse('release-stage-connection-create')
+        response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(ReleaseStageConnection.objects.filter(
+            from_stage=self.planning_stage,
+            to_stage=new_to_stage
+        ).exists())
+
+    def test_admin_can_update_approvers(self):
+        approver_role = Role.objects.create(
+            name='Approver', tenant=self.tenant)
+        approver_team = Team.objects.create(
+            name='Approver Team', tenant=self.tenant)
+        connection = ReleaseStageConnection.objects.create(
+            from_stage=self.planning_stage,
+            to_stage=self.in_progress_stage,
+            tenant=self.tenant,
+            owner_only=False
+        )
+        payload = {
+            'approvers_list': [
+                {
+                    'roles': [approver_role.pk],
+                    'teams': [approver_team.pk]
+                }
+            ]
+        }
+        url = reverse(
+            'release-stage-connection-update',
+            kwargs={
+                'pk': connection.pk})
+        response = self.client.patch(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(ReleaseStageConnectionApprover.objects.filter(
+            approver_role=approver_role,
+            approver_team=approver_team
+        ).exists())
