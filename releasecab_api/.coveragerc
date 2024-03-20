@@ -1,3 +1,2 @@
 [run]
 omit=*/__init__.py,*/api_root.py,*/migrations/*,*/tests/*,*/settings.py,*/urls.py,*/manage.py
-disable_warnings=*
