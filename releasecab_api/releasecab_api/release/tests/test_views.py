@@ -228,14 +228,12 @@ class TestStageConnectionViews(TestCase):
 
     def test_admin_can_retrieve_stage_connections_list(self):
         url = reverse('admin-release-stage-connections-list')
-        print(url)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreaterEqual(len(response.data), 1)
 
     def test_admin_not_found_stage_connection_detail(self):
         url = reverse('admin-release-stage-connections-detail', kwargs={'pk': '2'})
-        print(url)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
