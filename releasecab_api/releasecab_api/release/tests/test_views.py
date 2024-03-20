@@ -10,13 +10,12 @@ from releasecab_api.tenant.models import Tenant
 from releasecab_api.user.models import User
 
 from ..models import (Release, ReleaseComment, ReleaseConfig, ReleaseStage,
-                      ReleaseType)
+                      ReleaseType, ReleaseStageConnection)
 
 
 def create_access_token(user):
     token = AccessToken.for_user(user)
     return str(token)
-
 
 class ReleaseViewsTest(TestCase):
     def setUp(self):
@@ -182,3 +181,77 @@ class ReleaseConfigViewsTest(TestCase):
         url = reverse('admin-release-config-detail', kwargs={'pk': 9999})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+
+class TestStageConnectionViews(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.tenant = Tenant.objects.create(
+            name="Test Tenant",
+            number_of_employees=50,
+            invite_code="TEST123")
+        self.admin_user = User.objects.create(
+            email="admin@example.com",
+            password="password123",
+            tenant=self.tenant,
+            is_staff=True,
+            is_superuser=True,
+            is_tenant_owner=True
+        )
+        self.normal_user = User.objects.create(
+            email="user@example.com",
+            password="password456",
+            tenant=self.tenant,
+            is_tenant_owner=True
+        )
+        self.planning_stage = ReleaseStage.objects.create(
+            name='Planning in Progress',
+            description='Planning in Progress',
+            allow_release_delete=True,
+            allow_release_update=True,
+            tenant=self.tenant
+        )
+        self.in_progress_stage = ReleaseStage.objects.create(
+            name='In Progress',
+            description='In Progress',
+            allow_release_delete=False,
+            allow_release_update=False,
+            tenant=self.tenant
+        )
+        self.connection = ReleaseStageConnection.objects.create(
+            from_stage=self.planning_stage,
+            to_stage=self.in_progress_stage,
+            tenant=self.tenant,
+        )
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.admin_user)}')
+
+    def test_admin_can_retrieve_stage_connections_list(self):
+        url = reverse('admin-release-stage-connections-list')
+        print(url)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreaterEqual(len(response.data), 1)
+
+    def test_admin_not_found_stage_connection_detail(self):
+        url = reverse('admin-release-stage-connections-detail', kwargs={'pk': '2'})
+        print(url)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_user_can_retrieve_stage_connections_by_tenant_id(self):
+        url = reverse('release-stage-connection-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    # def test_user_cannot_update_stage_connection(self):
+    #     stage_connection = ReleaseStageConnection.objects.first()
+    #     url = reverse('stage-connection-update', kwargs={'pk': stage_connection.pk})
+    #     response = self.client.patch(url, data={}, format='json')
+    #     self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    # def test_user_can_retrieve_release_stage_connections(self):
+    #     release_stage_id = 1  # Replace with a valid release stage id
+    #     url = reverse('release-stage-connections', kwargs={'release_stage_id': release_stage_id})
+    #     response = self.client.get(url)
+    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
