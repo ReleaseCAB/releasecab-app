@@ -25,7 +25,7 @@ from .views.release_stage_views import (AdminStageDetail, AdminStageList,
                                         ReleaseStageDeleteAPIView,
                                         ReleaseStageRetrieve,
                                         ReleaseStageUpdateView)
-from .views.release_stats import ReleaseStatViewForUser
+from .views.release_stats_views import ReleaseStatViewForUser
 from .views.release_type_views import (AdminReleaseTypeDetail,
                                        AdminReleaseTypeList,
                                        ReleaseTypeCreateView,
