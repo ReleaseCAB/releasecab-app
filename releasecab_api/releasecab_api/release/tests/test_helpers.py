@@ -1,10 +1,13 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
-from releasecab_api.user.models import Role, Team
+
 from releasecab_api.tenant.models import Tenant
+from releasecab_api.user.models import Role, Team
+
 from ..helpers import ReleaseHelpers
 
 User = get_user_model()
+
 
 class TestReleaseHelpers(TestCase):
     def setUp(self):
@@ -23,10 +26,16 @@ class TestReleaseHelpers(TestCase):
 
     def test_is_user_in_role_connection(self):
         self.user.role.add(self.role)
-        self.assertTrue(ReleaseHelpers.is_user_in_role_connection(self.user, [{'id': self.role.id}]))
-        self.assertTrue(ReleaseHelpers.is_user_in_role_connection(self.user, []))
+        self.assertTrue(ReleaseHelpers.is_user_in_role_connection(
+            self.user, [{'id': self.role.id}]))
+        self.assertTrue(
+            ReleaseHelpers.is_user_in_role_connection(
+                self.user, []))
 
     def test_is_user_in_team_connection(self):
         self.team.members.add(self.user)
-        self.assertTrue(ReleaseHelpers.is_user_in_team_connection(self.user, [{'id': self.team.id}]))
-        self.assertTrue(ReleaseHelpers.is_user_in_team_connection(self.user, []))
+        self.assertTrue(ReleaseHelpers.is_user_in_team_connection(
+            self.user, [{'id': self.team.id}]))
+        self.assertTrue(
+            ReleaseHelpers.is_user_in_team_connection(
+                self.user, []))

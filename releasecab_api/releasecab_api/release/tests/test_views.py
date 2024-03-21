@@ -120,6 +120,23 @@ class ReleaseViewsTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
         self.assertEqual(ReleaseComment.objects.count(), 1)
 
+    def test_admin_can_retrieve_release_comment_list_success(self):
+        url = reverse('admin-release-comment-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreaterEqual(len(response.data), 1)
+
+    def test_admin_can_delete_release_comment_success(self):
+        url = reverse(
+            'release-comments-delete',
+            kwargs={
+                'pk': self.comment.pk})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(
+            ReleaseComment.objects.filter(
+                pk=self.comment.pk).exists())
+
 
 class ReleaseConfigViewsTest(TestCase):
     def setUp(self):
