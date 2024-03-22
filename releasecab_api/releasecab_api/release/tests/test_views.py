@@ -11,7 +11,7 @@ from releasecab_api.user.models import Role, Team, User
 
 from ..models import (Release, ReleaseComment, ReleaseConfig, ReleaseStage,
                       ReleaseStageConnection, ReleaseStageConnectionApprover,
-                      ReleaseType)
+                      ReleaseType, ReleaseEnvironment)
 
 
 def create_access_token(user):
@@ -377,3 +377,157 @@ class TestStageConnectionViews(TestCase):
             approver_role=approver_role,
             approver_team=approver_team
         ).exists())
+
+
+class ReleaseEnvironmentViewsTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.tenant = Tenant.objects.create(
+            name="Test Tenant",
+            number_of_employees=50,
+            invite_code="TEST123")
+        self.admin_user = User.objects.create(
+            email="admin@example.com",
+            password="password123",
+            tenant=self.tenant,
+            is_staff=True,
+            is_superuser=True,
+            is_tenant_owner=True
+        )
+        self.normal_user = User.objects.create(
+            email="user@example.com",
+            password="password456",
+            tenant=self.tenant,
+            is_tenant_owner=True
+        )
+        self.release_environment = ReleaseEnvironment.objects.create(
+            name="Test Environment",
+            tenant=self.tenant
+        )
+        self.release_stage=ReleaseStage.objects.create(
+                name="Test Stage",
+                tenant=self.tenant)
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.admin_user)}')
+
+    def test_admin_can_retrieve_release_environment_list(self):
+        url = reverse('admin-release-environment-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreaterEqual(len(response.data), 1)
+
+    def test_admin_can_retrieve_release_environment_detail(self):
+        url = reverse('admin-release-environment-detail', kwargs={'pk': self.release_environment.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], self.release_environment.name)
+
+    def test_tenant_owner_can_retrieve_release_environment_by_id(self):
+        url = reverse('release-environment-detail', kwargs={'pk': self.release_environment.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], self.release_environment.name)
+
+    def test_admin_can_update_release_environment(self):
+        url = reverse('release-environment-update', kwargs={'pk': self.release_environment.pk})
+        payload = {'name': 'Updated Environment Name'}
+        response = self.client.put(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], 'Updated Environment Name')
+
+    def test_tenant_owner_can_update_release_environment(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.normal_user)}')
+        url = reverse('release-environment-update', kwargs={'pk': self.release_environment.pk})
+        payload = {'name': 'Updated Environment Name'}
+        response = self.client.put(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], 'Updated Environment Name')
+
+    def test_admin_can_create_release_environment(self):
+        url = reverse('release-environment-create')
+        payload = {'name': 'New Environment'}
+        response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['name'], 'New Environment')
+
+    def test_tenant_owner_cannot_create_duplicate_release_environment(self):
+        url = reverse('release-environment-create')
+        payload = {'name': self.release_environment.name}
+        response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_admin_can_delete_release_environment(self):
+        url = reverse('release-environments-delete', kwargs={'pk': self.release_environment.pk})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(ReleaseEnvironment.objects.filter(pk=self.release_environment.pk).exists())
+
+    def test_tenant_owner_can_delete_release_environment(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.normal_user)}')
+        url = reverse('release-environments-delete', kwargs={'pk': self.release_environment.pk})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(ReleaseEnvironment.objects.filter(pk=self.release_environment.pk).exists())
+
+    def test_admin_can_retrieve_stage_list(self):
+        url = reverse('admin-release-stage-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreaterEqual(len(response.data), 1)
+
+    def test_admin_can_retrieve_stage_detail(self):
+        url = reverse('admin-release-stage-detail', kwargs={'pk': self.release_stage.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], self.release_stage.name)
+
+    def test_tenant_owner_can_retrieve_release_stage_by_id(self):
+        url = reverse('release-stage-detail', kwargs={'pk': self.release_stage.pk})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], self.release_stage.name)
+
+    def test_admin_can_update_release_stage(self):
+        url = reverse('release-stage-update', kwargs={'pk': self.release_stage.pk})
+        payload = {'name': 'Updated Stage Name'}
+        response = self.client.put(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], 'Updated Stage Name')
+
+    def test_tenant_owner_can_update_release_stage(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.normal_user)}')
+        url = reverse('release-stage-update', kwargs={'pk': self.release_stage.pk})
+        payload = {'name': 'Updated Stage Name'}
+        response = self.client.put(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['name'], 'Updated Stage Name')
+
+    def test_admin_can_create_release_stage(self):
+        url = reverse('release-stage-create')
+        payload = {'name': 'New Stage'}
+        response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data['name'], 'New Stage')
+
+    def test_tenant_owner_cannot_create_duplicate_release_stage(self):
+        url = reverse('release-stage-create')
+        payload = {'name': self.release_stage.name}
+        response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_admin_can_delete_release_stage(self):
+        url = reverse('release-stage-delete', kwargs={'pk': self.release_stage.pk})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(ReleaseStage.objects.filter(pk=self.release_stage.pk).exists())
+
+    def test_tenant_owner_can_delete_release_stage(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.normal_user)}')
+        url = reverse('release-stage-delete', kwargs={'pk': self.release_stage.pk})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(ReleaseStage.objects.filter(pk=self.release_stage.pk).exists())
