@@ -692,3 +692,11 @@ class ReleaseTypeViewsTest(TestCase):
                 pk=self.release_type.pk
             ).exists()
         )
+
+    def test_user_can_retrieve_release_types_by_tenant_id_success(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.normal_user)}')
+        url = reverse('release-type-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
