@@ -9,9 +9,9 @@ from rest_framework_simplejwt.tokens import AccessToken
 from releasecab_api.tenant.models import Tenant
 from releasecab_api.user.models import Role, Team, User
 
-from ..models import (Release, ReleaseComment, ReleaseConfig, ReleaseStage,
-                      ReleaseStageConnection, ReleaseStageConnectionApprover,
-                      ReleaseType, ReleaseEnvironment)
+from ..models import (Release, ReleaseComment, ReleaseConfig,
+                      ReleaseEnvironment, ReleaseStage, ReleaseStageConnection,
+                      ReleaseStageConnectionApprover, ReleaseType)
 
 
 def create_access_token(user):
@@ -404,11 +404,12 @@ class ReleaseEnvironmentViewsTest(TestCase):
             name="Test Environment",
             tenant=self.tenant
         )
-        self.release_stage=ReleaseStage.objects.create(
-                name="Test Stage",
-                tenant=self.tenant)
+        self.release_stage = ReleaseStage.objects.create(
+            name="Test Stage",
+            tenant=self.tenant)
         self.client.credentials(
-            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.admin_user)}')
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.admin_user)}')
 
     def test_admin_can_retrieve_release_environment_list(self):
         url = reverse('admin-release-environment-list')
@@ -417,19 +418,24 @@ class ReleaseEnvironmentViewsTest(TestCase):
         self.assertGreaterEqual(len(response.data), 1)
 
     def test_admin_can_retrieve_release_environment_detail(self):
-        url = reverse('admin-release-environment-detail', kwargs={'pk': self.release_environment.pk})
+        url = reverse(
+            'admin-release-environment-detail',
+            kwargs={
+                'pk': self.release_environment.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['name'], self.release_environment.name)
 
     def test_tenant_owner_can_retrieve_release_environment_by_id(self):
-        url = reverse('release-environment-detail', kwargs={'pk': self.release_environment.pk})
+        url = reverse('release-environment-detail',
+                      kwargs={'pk': self.release_environment.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['name'], self.release_environment.name)
 
     def test_admin_can_update_release_environment(self):
-        url = reverse('release-environment-update', kwargs={'pk': self.release_environment.pk})
+        url = reverse('release-environment-update',
+                      kwargs={'pk': self.release_environment.pk})
         payload = {'name': 'Updated Environment Name'}
         response = self.client.put(url, payload, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -437,8 +443,10 @@ class ReleaseEnvironmentViewsTest(TestCase):
 
     def test_tenant_owner_can_update_release_environment(self):
         self.client.credentials(
-            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.normal_user)}')
-        url = reverse('release-environment-update', kwargs={'pk': self.release_environment.pk})
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.normal_user)}')
+        url = reverse('release-environment-update',
+                      kwargs={'pk': self.release_environment.pk})
         payload = {'name': 'Updated Environment Name'}
         response = self.client.put(url, payload, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -458,18 +466,25 @@ class ReleaseEnvironmentViewsTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_admin_can_delete_release_environment(self):
-        url = reverse('release-environments-delete', kwargs={'pk': self.release_environment.pk})
+        url = reverse('release-environments-delete',
+                      kwargs={'pk': self.release_environment.pk})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(ReleaseEnvironment.objects.filter(pk=self.release_environment.pk).exists())
+        self.assertFalse(
+            ReleaseEnvironment.objects.filter(
+                pk=self.release_environment.pk).exists())
 
     def test_tenant_owner_can_delete_release_environment(self):
         self.client.credentials(
-            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.normal_user)}')
-        url = reverse('release-environments-delete', kwargs={'pk': self.release_environment.pk})
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.normal_user)}')
+        url = reverse('release-environments-delete',
+                      kwargs={'pk': self.release_environment.pk})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(ReleaseEnvironment.objects.filter(pk=self.release_environment.pk).exists())
+        self.assertFalse(
+            ReleaseEnvironment.objects.filter(
+                pk=self.release_environment.pk).exists())
 
     def test_admin_can_retrieve_stage_list(self):
         url = reverse('admin-release-stage-list')
@@ -478,19 +493,28 @@ class ReleaseEnvironmentViewsTest(TestCase):
         self.assertGreaterEqual(len(response.data), 1)
 
     def test_admin_can_retrieve_stage_detail(self):
-        url = reverse('admin-release-stage-detail', kwargs={'pk': self.release_stage.pk})
+        url = reverse(
+            'admin-release-stage-detail',
+            kwargs={
+                'pk': self.release_stage.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['name'], self.release_stage.name)
 
     def test_tenant_owner_can_retrieve_release_stage_by_id(self):
-        url = reverse('release-stage-detail', kwargs={'pk': self.release_stage.pk})
+        url = reverse(
+            'release-stage-detail',
+            kwargs={
+                'pk': self.release_stage.pk})
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data['name'], self.release_stage.name)
 
     def test_admin_can_update_release_stage(self):
-        url = reverse('release-stage-update', kwargs={'pk': self.release_stage.pk})
+        url = reverse(
+            'release-stage-update',
+            kwargs={
+                'pk': self.release_stage.pk})
         payload = {'name': 'Updated Stage Name'}
         response = self.client.put(url, payload, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -498,8 +522,12 @@ class ReleaseEnvironmentViewsTest(TestCase):
 
     def test_tenant_owner_can_update_release_stage(self):
         self.client.credentials(
-            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.normal_user)}')
-        url = reverse('release-stage-update', kwargs={'pk': self.release_stage.pk})
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.normal_user)}')
+        url = reverse(
+            'release-stage-update',
+            kwargs={
+                'pk': self.release_stage.pk})
         payload = {'name': 'Updated Stage Name'}
         response = self.client.put(url, payload, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -519,15 +547,148 @@ class ReleaseEnvironmentViewsTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_admin_can_delete_release_stage(self):
-        url = reverse('release-stage-delete', kwargs={'pk': self.release_stage.pk})
+        url = reverse(
+            'release-stage-delete',
+            kwargs={
+                'pk': self.release_stage.pk})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(ReleaseStage.objects.filter(pk=self.release_stage.pk).exists())
+        self.assertFalse(
+            ReleaseStage.objects.filter(
+                pk=self.release_stage.pk).exists())
 
     def test_tenant_owner_can_delete_release_stage(self):
         self.client.credentials(
-            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.normal_user)}')
-        url = reverse('release-stage-delete', kwargs={'pk': self.release_stage.pk})
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.normal_user)}')
+        url = reverse(
+            'release-stage-delete',
+            kwargs={
+                'pk': self.release_stage.pk})
         response = self.client.delete(url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(ReleaseStage.objects.filter(pk=self.release_stage.pk).exists())
+        self.assertFalse(
+            ReleaseStage.objects.filter(
+                pk=self.release_stage.pk).exists())
+
+
+class ReleaseTypeViewsTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.tenant = Tenant.objects.create(
+            name="Test Tenant",
+            number_of_employees=50,
+            invite_code="TEST123")
+        self.admin_user = User.objects.create(
+            email="admin@example.com",
+            password="password123",
+            tenant=self.tenant,
+            is_staff=True,
+            is_superuser=True,
+            is_tenant_owner=True
+        )
+        self.normal_user = User.objects.create(
+            email="user@example.com",
+            password="password456",
+            tenant=self.tenant,
+            is_tenant_owner=True
+        )
+        self.release_type = ReleaseType.objects.create(
+            name="Test Release Type",
+            tenant=self.tenant
+        )
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer \
+            {create_access_token(self.admin_user)}')
+
+    def test_admin_can_retrieve_release_types_list_success(self):
+        url = reverse('admin-release-type-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreaterEqual(len(response.data), 1)
+
+    def test_admin_can_retrieve_release_type_detail_success(self):
+        url = reverse(
+            'admin-release-type-detail',
+            kwargs={'pk': self.release_type.pk}
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.data['name'],
+            self.release_type.name
+        )
+
+    def test_user_cannot_retrieve_release_types_list_failure(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.normal_user)}')
+        url = reverse('admin-release-type-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_admin_can_retrieve_non_existent_release_type_failure(self):
+        url = reverse('admin-release-type-detail', kwargs={'pk': 9999})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_tenant_owner_can_create_release_type_success(self):
+        url = reverse('release-type-create')
+        payload = {
+            "name": "New Release Type"
+        }
+        response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(ReleaseType.objects.count(), 2)
+
+    def test_user_cannot_create_duplicate_release_type_failure(self):
+        url = reverse('release-type-create')
+        payload = {
+            "name": self.release_type.name
+        }
+        response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data['detail'],
+            "Name already exists"
+        )
+
+    def test_tenant_owner_can_retrieve_release_type_success(self):
+        url = reverse(
+            'release-type-detail',
+            kwargs={'pk': self.release_type.pk}
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.data['name'],
+            self.release_type.name
+        )
+
+    def test_tenant_owner_can_update_release_type_success(self):
+        url = reverse(
+            'release-type-update',
+            kwargs={'pk': self.release_type.pk}
+        )
+        payload = {
+            "name": "Updated Release Type"
+        }
+        response = self.client.put(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(
+            response.data['name'],
+            "Updated Release Type"
+        )
+
+    def test_tenant_owner_can_delete_release_type_success(self):
+        url = reverse(
+            'release-types-delete',
+            kwargs={'pk': self.release_type.pk}
+        )
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(
+            ReleaseType.objects.filter(
+                pk=self.release_type.pk
+            ).exists()
+        )
