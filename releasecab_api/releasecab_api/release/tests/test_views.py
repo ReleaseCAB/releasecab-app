@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from django.test import TestCase
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import AccessToken
@@ -698,5 +699,53 @@ class ReleaseTypeViewsTest(TestCase):
             HTTP_AUTHORIZATION=f'Bearer \
                 {create_access_token(self.normal_user)}')
         url = reverse('release-type-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class ReleaseViewsTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+
+        self.tenant = Tenant.objects.create(
+            name="Test Tenant",
+            number_of_employees=50,
+            invite_code="TEST123"
+        )
+
+        self.admin_user = User.objects.create(
+            email="admin@example.com",
+            password="password123",
+            tenant=self.tenant,
+            is_staff=True,
+            is_superuser=True,
+            is_tenant_owner=True
+        )
+
+        self.normal_user = User.objects.create(
+            email="user@example.com",
+            password="password456",
+            tenant=self.tenant,
+            is_tenant_owner=True
+        )
+
+        self.release = Release.objects.create(
+            name="Test Release",
+            identifier="TEST-123",
+            release_type=ReleaseType.objects.create(
+                name="Test Type",
+                tenant=self.tenant
+            ),
+            start_date=timezone.now(),
+            end_date=timezone.now() + timedelta(hours=1),
+            owner=self.admin_user,
+            current_stage=ReleaseStage.objects.create(
+                name="Test Stage",
+                tenant=self.tenant
+            )
+        )
+
+    def test_admin_can_retrieve_release_list_success(self):
+        url = reverse('admin-release-list')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
