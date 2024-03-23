@@ -703,16 +703,14 @@ class ReleaseTypeViewsTest(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
-class ReleaseViewsTest(TestCase):
+class ReleaseTest(TestCase):
     def setUp(self):
         self.client = APIClient()
-
         self.tenant = Tenant.objects.create(
             name="Test Tenant",
             number_of_employees=50,
             invite_code="TEST123"
         )
-
         self.admin_user = User.objects.create(
             email="admin@example.com",
             password="password123",
@@ -721,16 +719,15 @@ class ReleaseViewsTest(TestCase):
             is_superuser=True,
             is_tenant_owner=True
         )
-
         self.normal_user = User.objects.create(
             email="user@example.com",
             password="password456",
             tenant=self.tenant,
             is_tenant_owner=True
         )
-
         self.release = Release.objects.create(
             name="Test Release",
+            tenant=self.tenant,
             identifier="TEST-123",
             release_type=ReleaseType.objects.create(
                 name="Test Type",
@@ -744,8 +741,103 @@ class ReleaseViewsTest(TestCase):
                 tenant=self.tenant
             )
         )
+        self.release_config = ReleaseConfig.objects.create(
+            tenant=self.tenant,
+            initial_stage=ReleaseStage.objects.create(
+                name="Test Stage",
+                tenant=self.tenant,
+            )
+        )
 
     def test_admin_can_retrieve_release_list_success(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.admin_user)}')
         url = reverse('admin-release-list')
         response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_admin_can_retrieve_invalid_release_detail_success(self):
+        url = reverse('admin-release-detail', kwargs={'pk': 99})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_tenant_owner_can_create_release_success(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.admin_user)}')
+        url = reverse('release-create')
+        payload = {
+            "name": "Test Release",
+            "description": "Test Description",
+            "release_type": ReleaseType.objects.create(
+                name="Test Type",
+                tenant=self.tenant,
+            ).id,
+            "release_environment": [],
+            "affected_teams": [],
+            "ticket_link": "ticketLink",
+            "start_date": timezone.now(),
+            "end_date": timezone.now() + timedelta(hours=1),
+        }
+        response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_user_can_retrieve_release_by_identifier_success(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.admin_user)}')
+        url = reverse('release-detail', kwargs={'identifier': 'TEST-123'})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_user_cannot_retrieve_invalid_release_by_identifier_success(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.admin_user)}')
+        url = reverse('release-detail', kwargs={'identifier': 'None'})
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_user_can_retrieve_releases_for_tenant_success(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.admin_user)}')
+        url = reverse('release-list')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    # def test_user_can_retrieve_releases_for_tenant_calendar_success(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.admin_user)}')
+        url = reverse('release-calendar')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_tenant_owner_can_update_release_success(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.admin_user)}')
+        url = reverse('release-update', kwargs={'id': self.release.id})
+        payload = {
+            "name": "Updated Name"
+        }
+        response = self.client.patch(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_tenant_owner_can_delete_release_success(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.admin_user)}')
+        url = reverse('release-delete', kwargs={'pk': self.release.id})
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_user_can_search_releases_success(self):
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer \
+                {create_access_token(self.admin_user)}')
+        url = reverse('release-search')
+        response = self.client.get(url, {'search': 'example_query'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)

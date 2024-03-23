@@ -1,3 +1,4 @@
+from django.http import Http404
 from rest_framework import filters, status
 from rest_framework.authentication import SessionAuthentication
 from rest_framework.generics import (CreateAPIView, DestroyAPIView,
@@ -75,10 +76,7 @@ class ReleaseRetrieve(RetrieveAPIView):
             self.check_object_permissions(self.request, releases)
             return releases
         except Release.DoesNotExist:
-            return Response(
-                {"error": "Release not found."},
-                status=status.HTTP_404_NOT_FOUND
-            )
+            raise Http404("Release does not exist.")
 
 
 class ReleaseTenantList(ListAPIView):
