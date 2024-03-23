@@ -7,6 +7,7 @@ from rest_framework import status
 from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import AccessToken
 
+from releasecab_api.blackout.models import Blackout
 from releasecab_api.tenant.models import Tenant
 from releasecab_api.user.models import Role, Team, User
 
@@ -841,3 +842,109 @@ class ReleaseTest(TestCase):
         url = reverse('release-search')
         response = self.client.get(url, {'search': 'example_query'})
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
+class ReleaseStatViewForUserTest(TestCase):
+    def setUp(self):
+        self.client = APIClient()
+        self.tenant = Tenant.objects.create(
+            name="Test Tenant",
+            number_of_employees=50,
+            invite_code="TEST123")
+        self.user = User.objects.create(
+            email="user@example.com",
+            password="password123",
+            tenant=self.tenant,
+            is_staff=False,
+            is_superuser=False,
+            is_tenant_owner=False
+        )
+        self.client.credentials(
+            HTTP_AUTHORIZATION=f'Bearer {create_access_token(self.user)}'
+        )
+
+    def test_get_dashboard_stats(self):
+        Release.objects.create(
+            name="Test Release",
+            tenant=self.tenant,
+            identifier="TEST-12",
+            release_type=ReleaseType.objects.create(
+                name="Test Type",
+                tenant=self.tenant
+            ),
+            start_date=timezone.now(),
+            end_date=timezone.now() + timedelta(hours=1),
+            owner=self.user,
+            current_stage=ReleaseStage.objects.create(
+                name="Test Stage",
+                tenant=self.tenant
+            )
+        )
+        Release.objects.create(
+            name="Test Release",
+            tenant=self.tenant,
+            identifier="TEST-123",
+            release_type=ReleaseType.objects.create(
+                name="Test Type",
+                tenant=self.tenant
+            ),
+            start_date=timezone.now(),
+            end_date=timezone.now() + timedelta(hours=1),
+            owner=self.user,
+            current_stage=ReleaseStage.objects.create(
+                name="Test Stage",
+                tenant=self.tenant
+            )
+        )
+        url = reverse('release-stats')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['my_open_releases'], 2)
+        self.assertEqual(response.data['all_open_releases'], 2)
+        self.assertFalse(response.data['current_blackout'])
+
+    def test_get_dashboard_stats_with_blackout(self):
+        Release.objects.create(
+            name="Test Release",
+            tenant=self.tenant,
+            identifier="TEST-123",
+            release_type=ReleaseType.objects.create(
+                name="Test Type",
+                tenant=self.tenant
+            ),
+            start_date=timezone.now(),
+            end_date=timezone.now() + timedelta(hours=1),
+            owner=self.user,
+            current_stage=ReleaseStage.objects.create(
+                name="Test Stage",
+                tenant=self.tenant
+            )
+        )
+        Release.objects.create(
+            name="Test Release",
+            tenant=self.tenant,
+            identifier="TEST-1234",
+            release_type=ReleaseType.objects.create(
+                name="Test Type",
+                tenant=self.tenant
+            ),
+            start_date=timezone.now(),
+            end_date=timezone.now() + timedelta(hours=1),
+            owner=self.user,
+            current_stage=ReleaseStage.objects.create(
+                name="Test Stage",
+                tenant=self.tenant
+            )
+        )
+        Blackout.objects.create(
+            start_date="2024-03-22 00:00:00",
+            end_date="2024-03-23 00:00:00",
+            tenant=self.tenant,
+            owner=self.user
+        )
+        url = reverse('release-stats')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data['my_open_releases'], 2)
+        self.assertEqual(response.data['all_open_releases'], 2)
+        self.assertFalse(response.data['current_blackout'])
