@@ -807,7 +807,7 @@ class ReleaseTest(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    # def test_user_can_retrieve_releases_for_tenant_calendar_success(self):
+    def test_user_can_retrieve_releases_for_tenant_calendar_success(self):
         self.client.credentials(
             HTTP_AUTHORIZATION=f'Bearer \
                 {create_access_token(self.admin_user)}')
