@@ -28,7 +28,7 @@ jobs:
 
       - name: Generate coverage report
         run: |
-          docker-compose --env-file releasecab_api/environments/env.dev -f docker-compose-arm.dev.yml exec web sh -c "cd releasecab_api && coverage report && coverage html"
+          docker-compose --env-file releasecab_api/environments/env.dev -f docker-compose-arm.dev.yml exec -T web sh -c "cd releasecab_api && coverage report && coverage html"
 
       - name: Stop and remove Docker container
         run: |
