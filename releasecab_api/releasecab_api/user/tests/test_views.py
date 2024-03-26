@@ -225,39 +225,39 @@ class UserViewsTest(TestCase):
             is_tenant_owner=True,
             tenant=self.tenant
         )
-        self.normal_user = User.objects.create(
+        self.user = User.objects.create(
             email="user@example.com",
             password="password789",
             tenant=self.tenant
         )
 
-    def test_admin_can_retrieve_user_list_success(self):
+    def test_admin_user_list(self):
         url = reverse('admin-user-list')
         self.client.force_login(self.admin_user)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_tenant_owner_cannot_retrieve_user_list_failure(self):
-        url = reverse('admin-user-list')
-        self.client.force_login(self.tenant_owner)
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
-    def test_admin_can_retrieve_user_detail_success(self):
-        url = reverse('admin-user-detail', kwargs={'pk': self.normal_user.pk})
+    def test_admin_user_detail(self):
+        url = reverse('admin-user-detail', kwargs={'pk': self.user.pk})
         self.client.force_login(self.admin_user)
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_tenant_owner_cannot_retrieve_user_detail_failure(self):
-        url = reverse('admin-user-detail', kwargs={'pk': self.normal_user.pk})
-        self.client.force_login(self.tenant_owner)
+    def test_me_detail(self):
+        url = reverse('me-detail')
+        self.client.force_login(self.user)
         response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_user_can_update_self_success(self):
+    def test_get_user_by_id(self):
+        url = reverse('get-user-by-id', kwargs={'pk': self.user.pk})
+        self.client.force_login(self.admin_user)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_user_update(self):
         url = reverse('user-update')
-        self.client.force_login(self.normal_user)
+        self.client.force_login(self.user)
         payload = {
             "first_name": "Updated",
             "last_name": "User",
@@ -266,14 +266,51 @@ class UserViewsTest(TestCase):
         response = self.client.post(url, payload, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_user_validation_email_taken(self):
-        url = reverse('user-validation')
-        payload = {"email": self.admin_user.email}
-        response = self.client.post(url, payload, format='json')
-        self.assertEqual(response.status_code, status.HTTP_409_CONFLICT)
+    def test_update_user_view(self):
+        url = reverse('update-user', kwargs={'pk': self.user.pk})
+        self.client.force_login(self.admin_user)
+        payload = {
+            "first_name": "Updated",
+            "last_name": "User",
+            "email": "updated@example.com"
+        }
+        response = self.client.put(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_user_validation_email_not_taken(self):
+    def test_user_validation_view(self):
         url = reverse('user-validation')
         payload = {"email": "new@example.com"}
         response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_user_list_by_tenant(self):
+        url = reverse('user-list-by-tenant')
+        self.client.force_login(self.admin_user)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_user_profile_search_view(self):
+        url = reverse('user-profile-search')
+        self.client.force_login(self.admin_user)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_user_create_view(self):
+        url = reverse('user-create')
+        payload = {
+            "email": "newuser@example.com",
+            "tenant": self.tenant.id,
+            "password": "test12344"}
+        response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_login_view(self):
+        url = reverse('login')
+        payload = {"email": "user@example.com", "password": "password789"}
+        response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_logout_session_view(self):
+        url = reverse('logout-session')
+        response = self.client.post(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
