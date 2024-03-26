@@ -1,0 +1,36 @@
+name: Run Tests on Pull Requests
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      docker:
+        image: docker:latest
+        options: --privileged
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+
+      - name: Build and run Docker container
+        run: |
+          docker-compose --env-file releasecab_api/environments/env.dev -f docker-compose-arm.dev.yml up -d
+
+      - name: Run tests
+        run: |
+          docker-compose --env-file releasecab_api/environments/env.dev -f docker-compose-arm.dev.yml exec web sh -c "cd releasecab_api && PYTHONWARNINGS=ignore coverage run manage.py test"
+
+      - name: Generate coverage report
+        run: |
+          docker-compose --env-file releasecab_api/environments/env.dev -f docker-compose-arm.dev.yml exec web sh -c "cd releasecab_api && coverage report && coverage html"
+
+      - name: Stop and remove Docker container
+        run: |
+          docker-compose --env-file releasecab_api/environments/env.dev -f docker-compose-arm.dev.yml stop
+          docker-compose --env-file releasecab_api/environments/env.dev -f docker-compose-arm.dev.yml down -v
