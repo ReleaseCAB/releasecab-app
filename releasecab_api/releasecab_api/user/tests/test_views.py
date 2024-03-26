@@ -46,12 +46,6 @@ class RoleViewsTest(TestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_admin_can_retrieve_role_detail_success(self):
-        url = reverse('admin-role-detail', kwargs={'pk': self.role.pk})
-        self.client.force_login(self.admin_user)
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-
     def test_tenant_owner_cannot_retrieve_role_detail_failure(self):
         url = reverse('admin-role-detail', kwargs={'pk': self.role.pk})
         self.client.force_login(self.tenant_owner)
@@ -68,14 +62,38 @@ class RoleViewsTest(TestCase):
         response = self.client.put(url, payload, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_normal_user_cannot_update_role_failure(self):
-        url = reverse('update-role', kwargs={'pk': self.role.pk})
-        self.client.force_login(self.tenant_owner)
+    def test_admin_can_create_role_success(self):
+        url = reverse('role-create')
+        self.client.force_login(self.admin_user)
         payload = {
-            "name": "Updated Role",
-            "description": "Updated Description"
+            "name": "New Role",
+            "description": "New Description"
         }
-        response = self.client.put(url, payload, format='json')
+        response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_admin_can_delete_role_success(self):
+        url = reverse('role-delete', kwargs={'pk': self.role.pk})
+        self.client.force_login(self.admin_user)
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_admin_can_retrieve_role_detail_success(self):
+        url = reverse('get-role-by-id', kwargs={'pk': self.role.pk})
+        self.client.force_login(self.admin_user)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_unauthenticated_user_cannot_retrieve_role_list_by_tenant_failure(
+            self):
+        url = reverse('role-list-by-tenant')
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_admin_can_retrieve_role_list_by_tenant_success(self):
+        url = reverse('role-list-by-tenant')
+        self.client.force_login(self.admin_user)
+        response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
@@ -145,6 +163,46 @@ class TeamViewsTest(TestCase):
         }
         response = self.client.post(url, payload, format='json')
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_admin_can_delete_team_success(self):
+        url = reverse('team-delete', kwargs={'pk': self.team.pk})
+        self.client.force_login(self.admin_user)
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+
+    def test_admin_can_retrieve_team_by_id_success(self):
+        url = reverse('team-retrieve', kwargs={'pk': self.team.pk})
+        self.client.force_login(self.admin_user)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_admin_can_retrieve_managed_teams_list_success(self):
+        url = reverse('admin-team-list')
+        self.client.force_login(self.admin_user)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_tenant_owner_cannot_retrieve_managed_teams_list_failure(self):
+        url = reverse('admin-team-list')
+        self.client.force_login(self.tenant_owner)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_user_managed_teams_list_success(self):
+        url = reverse('user-managed-teams')
+        self.client.force_login(self.tenant_owner)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_admin_can_add_user_to_teams_success(self):
+        url = reverse('team-add-users')
+        self.client.force_login(self.admin_user)
+        payload = {
+            "user_id": self.tenant_owner.id,
+            "team_ids": [self.team.id]
+        }
+        response = self.client.post(url, payload, format='json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class UserViewsTest(TestCase):
