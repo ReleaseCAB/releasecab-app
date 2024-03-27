@@ -23,6 +23,10 @@ Contents:
 
 .. contents:: :local:
 
+Continuous integration status:
+
+.. image:: https://github.com/ReleaseCAB/releasecab-app/blob/main/releasecab_api/coverage.svg
+
 Tech Stack
 ----------
 
