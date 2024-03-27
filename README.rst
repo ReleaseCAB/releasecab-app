@@ -19,10 +19,6 @@ Features Include:
 
 .. image:: https://github.com/ReleaseCAB/releasecab-app/blob/main/docs/images/workflow_designer_screenshot.png
 
-Contents:
-
-.. contents:: :local:
-
 Continuous Integration Status:
 ------------------------------
 
