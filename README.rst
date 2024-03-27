@@ -20,8 +20,8 @@ Features Include:
 .. image:: https://github.com/ReleaseCAB/releasecab-app/blob/main/docs/images/workflow_designer_screenshot.png
 
 
-.. contents:: Table of Contents
-   :local:
+.. toctree::
+   :maxdepth: 2
 
 
 Continuous Integration Status:
