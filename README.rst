@@ -57,7 +57,7 @@ Road Map
 +---------+-----------------+-----------------+
 | 1.0.4   | Production Ready| July 2024       |
 +---------+-----------------+-----------------+
-| 1.1.0   | Beta Release    |  Aug 2024       |
+| 1.1.0   | Beta Release    | Aug 2024        |
 +---------+-----------------+-----------------+
 
 See GitHub issues for what is slotted for each of these future versions
