@@ -102,11 +102,14 @@ so we keep a clean and stardardized code look. To run pre-commit manually:
 3. Ensure all checks pass
 
 
-Testing TEST
+Testing
 -------
+
+For Backend:
 
 1. Run './scripts/run-test.sh'
 2. Ensure all tests pass
+3. This will generate a .coverage directory where you view the code coverage per file
 
 
 Test Data
