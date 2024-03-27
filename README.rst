@@ -23,7 +23,9 @@ Contents:
 
 .. contents:: :local:
 
-Continuous integration status:
+
+Continuous Integration Status:
+------------------------------
 
 .. image:: https://github.com/ReleaseCAB/releasecab-app/blob/main/releasecab_api/coverage.svg
 
@@ -103,7 +105,7 @@ so we keep a clean and stardardized code look. To run pre-commit manually:
 3. Ensure all checks pass
 
 
-Testing
+Testing TEST
 -------
 
 1. Run './scripts/run-test.sh'
