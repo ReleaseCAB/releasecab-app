@@ -23,6 +23,7 @@ Continuous Integration Status:
 ------------------------------
 
 Backend Tests:
+
 .. image:: https://github.com/ReleaseCAB/releasecab-app/blob/main/releasecab_api/coverage.svg
 
 Tech Stack
