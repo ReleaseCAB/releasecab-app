@@ -41,26 +41,6 @@ Release CAB is currently in an Alpha release and is by no means feature complete
 where we plan to move from here.
 
 
-Road Map
---------
-
-+---------+-----------------+-----------------+
-| Version |   Update Name   | Planned Release |
-+=========+=================+=================+
-| 1.0.1   | Current Release | Current         |
-+---------+-----------------+-----------------+
-| 1.0.2   | Configurability | May 2024        |
-+---------+-----------------+-----------------+
-| 1.0.3   | Frontend Revamp | June 2024       |
-+---------+-----------------+-----------------+
-| 1.0.4   | Production Ready| July 2024       |
-+---------+-----------------+-----------------+
-| 1.1.0   | Beta Release    | Aug 2024        |
-+---------+-----------------+-----------------+
-
-See GitHub issues for what is slotted for each of these future versions
-
-
 Setup For Clean Install
 ------------------------
 
