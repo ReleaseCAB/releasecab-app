@@ -1,0 +1,30 @@
+{
+    "name": "releasecab",
+    "dockerComposeFile": ["../docker-compose.dev.yml", "docker-compose.extend.yml"],
+    "service": "vscode",
+    "runServices": ["vscode", "ui", "web", "db"],
+    "workspaceFolder": "/workspace",
+    "shutdownAction": "stopCompose",
+    "overrideCommand": true,
+    "features": {
+        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+        "ghcr.io/devcontainers/features/node:1": {}
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "batisteo.vscode-django",
+                "ms-python.debugpy",
+                "ms-azuretools.vscode-docker",
+                "ms-ossdata.vscode-postgresql",
+                "eamodio.gitlens",
+                "vscode-icons-team.vscode-icons",
+                "esbenp.prettier-vscode",
+                "dbaeumer.vscode-eslint",
+                "editorconfig.editorco",
+                "mhutchie.git-graph"
+            ]
+        }
+    },
+    "remoteUser": "vscode"
+  }
