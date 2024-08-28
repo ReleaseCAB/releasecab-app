@@ -8,10 +8,10 @@ done
 
 echo "PostgreSQL started"
 
-python releasecab_api/manage.py makemigrations
-python releasecab_api/manage.py migrate
-python releasecab_api/manage.py collectstatic --no-input
+python manage.py makemigrations
+python manage.py migrate
+python manage.py collectstatic --no-input
 # For now, uncomment for initial data load 
-#python releasecab_api/manage.py loaddata releasecab_api/initial-data-fixture.json
+#python manage.py loaddata initial-data-fixture.json
 
 exec "$@"
