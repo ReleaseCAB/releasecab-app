@@ -1,0 +1,35 @@
+{
+  "name": "releasecab",
+  "dockerComposeFile": [
+    "../docker-compose.dev.yml",
+    "docker-compose.extend.yml"
+  ],
+  "service": "vscode",
+  "runServices": ["vscode", "ui", "web", "db"],
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopCompose",
+  "overrideCommand": true,
+  "postCreateCommand": "pipx install pre-commit",
+  "postStartCommand": "pip install --user -r releasecab_api/requirements.txt",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {},
+    "ghcr.io/devcontainers/features/node:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "batisteo.vscode-django",
+        "ms-python.debugpy",
+        "ms-azuretools.vscode-docker",
+        "ckolkman.vscode-postgres",
+        "eamodio.gitlens",
+        "vscode-icons-team.vscode-icons",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "editorconfig.editorco",
+        "mhutchie.git-graph"
+      ]
+    }
+  },
+  "remoteUser": "vscode"
+}

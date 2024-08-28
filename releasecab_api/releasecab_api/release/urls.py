@@ -109,10 +109,10 @@ urlpatterns = [
     path('release-environments/',
          ReleaseEnvironmentByTenantId.as_view(),
          name='release-environment-list'),
-    path('release-environments/create/', \
+    path('release-environments/create/',
          ReleaseEnvCreateView.as_view(),
          name='release-environment-create'),
-    path('release-environments/<int:pk>/', \
+    path('release-environments/<int:pk>/',
          ReleaseEnvRetrieve.as_view(),
          name='release-environment-detail'),
     path('release-environments/update/<int:pk>/',

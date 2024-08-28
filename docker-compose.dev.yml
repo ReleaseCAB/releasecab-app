@@ -1,12 +1,11 @@
-version: "3.8"
 services:
   web:
     build:
-      context: .
-      dockerfile: releasecab_api/Dockerfile.dev
-    command: python releasecab_api/manage.py runserver 0.0.0.0:8000
+      context: ./releasecab_api
+      dockerfile: Dockerfile.dev
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/app/
+      - ./releasecab_api:/app/
     ports:
       - 8000:8000
     env_file:
@@ -21,9 +20,10 @@ services:
       - 3000:3000
     volumes:
       - ./releasecab_ui:/app/
-      - /app/node_modules
+      - node_modules:/app/node_modules
   db:
     image: postgres:15.3-alpine
-    environment:
-      POSTGRES_USER: ${POSTGRES_USERNAME}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    env_file:
+      - ./releasecab_api/environments/env.dev
+volumes:
+  node_modules: {}
